@@ -21,6 +21,9 @@ unlike the rest of the party, yet their representatives
 vote for the construction of an oil pipeline
 literally in the freshwater lake.
 
+Edit (29 Jun 2021): https://apnews.com/article/donald-trump-business-climate-climate-change-e1f0f572a7b5841bb6141456776bafec
+Eyy Michigan pride!
+
 ### Inspiration
 
 Most Congressmen only vote with their parties
