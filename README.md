@@ -53,10 +53,16 @@ to keep this developing.
 
 If you use nvm, run `nvm use`. Then:
 
-1. `npm install`
-2. `npm run android` or `npm run ios`
-3. To use the hot-reload, just head 
+1. `npm install --production=false`
+1. Start metro: `npm run start`
+1. `npm run android` or `npm run ios`
+1. To use the hot-reload, just head 
    back to the simulator. Make sure Metro is running.
+
+If you're using Webstorm, follow this guide for linting
+with prettier automatically on every 
+save: https://prettier.io/docs/en/webstorm.html. You can
+also manually lint via `npm run lint`.
 
 ---
 
@@ -75,7 +81,7 @@ from the eye to yours and more from the eye to the ballot box
 is worse if you think about it.
 
 ```
-Copyright 2021 Andrew Chen Wang
+Copyright 2021 Andrew Chen Wang, Hear Ye LLC
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.

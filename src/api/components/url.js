@@ -7,10 +7,4 @@
  * @format
  */
 
-module.exports = {
-  bracketSpacing: false,
-  jsxBracketSameLine: true,
-  singleQuote: true,
-  trailingComma: 'all',
-  arrowParens: 'avoid',
-};
+export default __DEV__ ? 'http://localhost:8001/' : 'https://hearye.us.com/';

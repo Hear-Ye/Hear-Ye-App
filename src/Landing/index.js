@@ -7,10 +7,7 @@
  * @format
  */
 
-module.exports = {
-  bracketSpacing: false,
-  jsxBracketSameLine: true,
-  singleQuote: true,
-  trailingComma: 'all',
-  arrowParens: 'avoid',
-};
+'use strict';
+import LandingScreen from './components/LandingScreen';
+
+export {LandingScreen};
