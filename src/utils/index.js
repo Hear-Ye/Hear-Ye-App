@@ -9,9 +9,10 @@
 
 'use strict';
 import Colors from './components/Colors';
+import Theme from './components/Theme';
 import {
   loginNavigationRoot,
   dashboardNavigationRoot,
 } from './components/NavigationRoot';
 
-export {Colors, loginNavigationRoot, dashboardNavigationRoot};
+export {Colors, Theme, loginNavigationRoot, dashboardNavigationRoot};

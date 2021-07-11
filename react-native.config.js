@@ -7,15 +7,10 @@
  * @format
  */
 
-'use strict';
-
-export default {
-  primary: '#1292B4',
-  red: '#F00',
-  white: '#FFF',
-  lighter: '#F3F3F3',
-  light: '#DAE1E7',
-  dark: '#444',
-  darker: '#222',
-  black: '#000',
+module.exports = {
+  project: {
+    ios: {},
+    android: {},
+  },
+  assets: ['./assets/fonts/'],
 };

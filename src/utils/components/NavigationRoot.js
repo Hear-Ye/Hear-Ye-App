@@ -16,6 +16,14 @@ const loginNavigationRoot = {
         {
           component: {
             name: 'LandingScreen',
+            options: {
+              topBar: {
+                visible: false,
+                drawBehind: true,
+                animate: false,
+                height: 0,
+              },
+            },
           },
         },
       ],

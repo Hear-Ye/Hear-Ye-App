@@ -110,7 +110,6 @@ const Authenticate = async () => {
       await setToken('access', data.access);
       await setToken('refresh', data.refresh);
     } catch (e) {
-      console.error(e);
       return false;
     }
   }

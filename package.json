@@ -7,7 +7,6 @@
     "ios": "npx react-native run-ios",
     "start": "npx react-native start",
     "test": "jest",
-    "pod install": "npx pod-install",
     "lint": "npx prettier --write __tests__ index.js src metro.config.js .prettierrc.js babel.config.js"
   },
   "dependencies": {
@@ -17,7 +16,8 @@
     "react-native-htmlview": "^0.16.0",
     "react-native-keychain": "7.0.0",
     "react-native-mmkv": "^1.2.0",
-    "react-native-navigation": "^7.17.1"
+    "react-native-navigation": "^7.17.1",
+    "react-native-onboarding-swiper": "^1.1.4"
   },
   "devDependencies": {
     "@babel/core": "7.13.16",
