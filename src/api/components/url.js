@@ -7,4 +7,6 @@
  * @format
  */
 
-export default __DEV__ ? 'http://localhost:8001/' : 'https://hearye.us.com/';
+export default `${
+  __DEV__ ? 'http://localhost:8001' : 'https://hearye.us'
+}/api/`;

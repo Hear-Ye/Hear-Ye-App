@@ -31,9 +31,9 @@ const getToken = async token_type => {
     case 'velnota_refresh':
       return (
         await Keychain.getGenericPassword({
-          service: TOKEN_SERVICE,
+          service: TOKEN_SERVICE + token_type,
         })
-      )[token_type];
+      ).password;
     default:
       throw Error('Invalid token type');
   }
@@ -44,7 +44,7 @@ const getToken = async token_type => {
  * @param token_type {('access'|'refresh'|'velnota_access'|'velnota_refresh')}
  * @param token_value {String}
  */
-async function setToken(token_type, token_value) {
+const setToken = async (token_type, token_value) => {
   switch (token_type) {
     case 'access':
       MMKV.set(ACCESS_TOKEN_KEY, token_value);
@@ -53,11 +53,11 @@ async function setToken(token_type, token_value) {
     case 'velnota_access':
     case 'velnota_refresh':
       await Keychain.setGenericPassword(token_type, token_value, {
-        service: TOKEN_SERVICE,
+        service: TOKEN_SERVICE + token_type,
       });
       break;
   }
-}
+};
 
 /**
  * Refreshes the access token
@@ -65,7 +65,7 @@ async function setToken(token_type, token_value) {
  */
 const RefreshToken = async () => {
   try {
-    const response = await fetch(`${url}users/api/v1/token/refresh/`, {
+    const response = await fetch(`${url}users/v1/token/refresh/`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -75,6 +75,9 @@ const RefreshToken = async () => {
         refresh: await getToken('refresh'),
       }),
     });
+    if (!response.ok) {
+      return false;
+    }
     await setToken('refresh', (await response.json()).refresh);
     return true;
   } catch (e) {
@@ -85,13 +88,12 @@ const RefreshToken = async () => {
 /**
  * Obtains both access and refresh tokens
  * @return {Promise<boolean>} whether the obtaining of tokens was successful
- * @constructor
  */
 const Authenticate = async () => {
   const _refreshed = await RefreshToken();
   if (!_refreshed) {
     try {
-      const response = await fetch(`${url}users/api/v1/token/obtain/`, {
+      const response = await fetch(`${url}users/v1/token/obtain/`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -102,13 +104,12 @@ const Authenticate = async () => {
           refresh_token: await getToken('velnota_refresh'),
         }),
       });
-      if (response.statusCode > 299) {
-        console.error(response.statusMessage);
+      if (!response.ok) {
         return false;
       }
       const data = await response.json();
-      await setToken('access', data.access);
-      await setToken('refresh', data.refresh);
+      await setToken('access', data.access_token);
+      await setToken('refresh', data.refresh_token);
     } catch (e) {
       return false;
     }
@@ -122,4 +123,4 @@ const Logout = async () => {
   await Navigation.setRoot(loginNavigationRoot);
 };
 
-export {Authenticate, Logout, getToken};
+export {Authenticate, Logout, getToken, setToken};

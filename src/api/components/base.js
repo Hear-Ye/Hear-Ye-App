@@ -122,20 +122,20 @@ const request = async (path, method, options) => {
   if (response.ok) {
     return response;
   }
-  if (response.statusCode === 401) {
+  if (response.status === 401) {
     if (await Authenticate()) {
       return await request(path, method, options);
     } else {
       await Logout();
     }
   } else {
-    switch (response.statusCode) {
+    switch (response.status) {
       case 400:
         throw new BadRequestError(response.statusText, response);
       case 403:
         throw new ForbiddenError(response.statusText, response);
       default:
-        if (response.statusCode >= 500) {
+        if (response.status >= 500) {
           throw new ServerError(response.statusText, response);
         } else {
           throw new ApiError(response.statusText, response);

@@ -18,15 +18,36 @@ import {
   Linking,
   Dimensions,
   useColorScheme,
+  Alert,
 } from 'react-native';
+import {authorize, prefetchConfiguration} from 'react-native-app-auth';
 import {MMKV} from 'react-native-mmkv';
 
-import {Colors, Theme} from '../../utils';
+import {Colors, dashboardNavigationRoot, Theme} from '../../utils';
 import {PressableOpacity} from '../../components/PressableOpacity';
 import Onboarding from './onboarding';
+import {Authenticate, setToken} from '../../api/components/auth';
+import {Navigation} from 'react-native-navigation';
 
 const height = Dimensions.get('screen').height;
 const onboardedKey = 'onboarded-user-for-app';
+
+const velnotaUrl = 'http://localhost:8000', //'https://velnota.com',
+  configs = {
+    velnota: {
+      issuer: velnotaUrl,
+      clientId: '02dCxal0WZK4yEi99CmZQPBirAqYhXqanI0lYPtE',
+      redirectUrl: 'us.hearye.auth://velnota/login/callback/',
+      usePKCE: true,
+      scopes: ['openid'],
+      // You can find these endpoints in oauth2_provider.urls
+      serviceConfiguration: {
+        authorizationEndpoint: `${velnotaUrl}/oauth/v1/authorize/`,
+        tokenEndpoint: `${velnotaUrl}/oauth/v1/token/`,
+        revocationEndpoint: `${velnotaUrl}/oauth/v1/revoke_token/`,
+      },
+    },
+  };
 
 // The Stop talking image came from
 // https://www.pexels.com/photo/woman-in-black-shirt-holding-yellow-and-black-no-smoking-sign-2372440/
@@ -35,6 +56,28 @@ const LandingScreen = () => {
   const [modalVisible, setModalVisible] = React.useState(
     !MMKV.getBoolean(onboardedKey),
   );
+
+  React.useEffect(() => {
+    // noinspection JSIgnoredPromiseFromCall
+    prefetchConfiguration({
+      warmAndPrefetchChrome: true,
+      ...configs.velnota,
+    });
+  }, []);
+
+  const handleAuthorize = React.useCallback(async () => {
+    try {
+      const newAuthState = await authorize(configs.velnota);
+      await setToken('velnota_access', newAuthState.accessToken);
+      await setToken('velnota_refresh', newAuthState.refreshToken);
+      if (await Authenticate()) {
+        await Navigation.setRoot(dashboardNavigationRoot);
+      } else {
+        Alert.alert('Failed to login');
+      }
+    } catch (e) {}
+  }, []);
+
   return (
     <View style={styles.container}>
       <Modal
@@ -86,7 +129,9 @@ const LandingScreen = () => {
         <View style={[styles.padded, styles.buttonGroup]}>
           <View>
             <PressableOpacity
-              onPress={() => {}}
+              onPress={() => {
+                handleAuthorize();
+              }}
               style={[
                 Theme.DEFAULT_BUTTON_STYLE,
                 {backgroundColor: Colors.primary},
@@ -98,7 +143,8 @@ const LandingScreen = () => {
             <PressableOpacity
               onPress={async () => {
                 await Linking.openURL(
-                  'https://velnota.com/accounts/register/?project=Hear-Ye',
+                  'https://velnota.com/accounts/register/' +
+                    '?invite=hear-ye-0001&project=Hear%20Ye',
                 );
               }}
               style={[

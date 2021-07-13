@@ -131,11 +131,14 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.hearye"
+        applicationId "us.hearye.voting"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        manifestPlaceholders = [
+           appAuthRedirectScheme: 'us.hearye.auth'
+        ]
     }
     splits {
         abi {
