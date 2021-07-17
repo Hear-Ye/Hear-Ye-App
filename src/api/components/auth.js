@@ -8,12 +8,11 @@
  */
 
 'use strict';
-import {MMKV} from 'react-native-mmkv';
 import * as Keychain from 'react-native-keychain';
 import {Navigation} from 'react-native-navigation';
 
 import url from './url';
-import {loginNavigationRoot} from '../../utils';
+import {loginNavigationRoot, Storage} from '../../utils';
 
 const ACCESS_TOKEN_KEY = 'access-token',
   TOKEN_SERVICE = 'us.hearye.voting';
@@ -25,7 +24,7 @@ const ACCESS_TOKEN_KEY = 'access-token',
 const getToken = async token_type => {
   switch (token_type) {
     case 'access':
-      return MMKV.getString(ACCESS_TOKEN_KEY);
+      return await Storage.getString(ACCESS_TOKEN_KEY);
     case 'refresh':
     case 'velnota_access':
     case 'velnota_refresh':
@@ -47,7 +46,7 @@ const getToken = async token_type => {
 const setToken = async (token_type, token_value) => {
   switch (token_type) {
     case 'access':
-      MMKV.set(ACCESS_TOKEN_KEY, token_value);
+      await Storage.set(ACCESS_TOKEN_KEY, token_value);
       break;
     case 'refresh':
     case 'velnota_access':
@@ -118,7 +117,7 @@ const Authenticate = async () => {
 };
 
 const Logout = async () => {
-  MMKV.delete(ACCESS_TOKEN_KEY);
+  await Storage.delete(ACCESS_TOKEN_KEY);
   await Keychain.resetGenericPassword({service: TOKEN_SERVICE});
   await Navigation.setRoot(loginNavigationRoot);
 };

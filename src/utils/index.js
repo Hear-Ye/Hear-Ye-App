@@ -14,5 +14,6 @@ import {
   loginNavigationRoot,
   dashboardNavigationRoot,
 } from './components/NavigationRoot';
+import Storage from './components/Storage';
 
-export {Colors, Theme, loginNavigationRoot, dashboardNavigationRoot};
+export {Colors, Theme, loginNavigationRoot, dashboardNavigationRoot, Storage};

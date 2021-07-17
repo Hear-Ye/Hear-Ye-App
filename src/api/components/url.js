@@ -7,6 +7,13 @@
  * @format
  */
 
-export default `${
-  __DEV__ ? 'http://localhost:8001' : 'https://hearye.us'
-}/api/`;
+import Config from 'react-native-config';
+
+function getLocalUrl() {
+  const url = Config.LOCAL_API_URL
+    ? Config.LOCAL_API_URL
+    : 'http://localhost:8001';
+  return url.endsWith('/') ? url.slice(0, -1) : url;
+}
+
+export default `${__DEV__ ? getLocalUrl() : 'https://hearye.us'}/api/`;

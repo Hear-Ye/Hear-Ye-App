@@ -10,26 +10,27 @@
     "lint": "npx prettier --write __tests__ index.js src metro.config.js .prettierrc.js babel.config.js"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.5",
     "react": "17.0.1",
     "react-native": "0.64.2",
-    "react-native-app-auth": "^6.4.0",
+    "react-native-app-auth": "6.4.0",
+    "react-native-config": "1.4.2",
     "react-native-htmlview": "^0.16.0",
     "react-native-keychain": "7.0.0",
-    "react-native-mmkv": "^1.2.0",
     "react-native-navigation": "^7.17.1",
-    "react-native-onboarding-swiper": "^1.1.4"
+    "react-native-onboarding-swiper": "1.1.4"
   },
   "devDependencies": {
     "@babel/core": "7.13.16",
-    "@babel/runtime": "7.13.17",
     "@babel/preset-env": "7.1.6",
-    "typescript": "^4.3.5",
+    "@babel/runtime": "7.13.17",
     "@react-native-community/eslint-config": "2.0.0",
     "babel-jest": "26.6.3",
     "eslint": "7.14.0",
     "jest": "26.6.3",
     "metro-react-native-babel-preset": "0.64.0",
-    "react-test-renderer": "17.0.1"
+    "react-test-renderer": "17.0.1",
+    "typescript": "^4.3.5"
   },
   "jest": {
     "preset": "react-native"

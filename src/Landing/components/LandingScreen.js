@@ -21,26 +21,25 @@ import {
   Alert,
 } from 'react-native';
 import {authorize, prefetchConfiguration} from 'react-native-app-auth';
-import {MMKV} from 'react-native-mmkv';
 
-import {Colors, dashboardNavigationRoot, Theme} from '../../utils';
+import {Colors, dashboardNavigationRoot, Theme, Storage} from '../../utils';
 import {PressableOpacity} from '../../components/PressableOpacity';
 import Onboarding from './onboarding';
 import {Authenticate, setToken} from '../../api/components/auth';
 import {Navigation} from 'react-native-navigation';
+import Config from 'react-native-config';
 
 const height = Dimensions.get('screen').height;
 const onboardedKey = 'onboarded-user-for-app';
 
-const velnotaUrl = 'http://localhost:8000', //'https://velnota.com',
+const velnotaUrl = Config.VELNOTA_ISSUER_URL,
   configs = {
     velnota: {
       issuer: velnotaUrl,
-      clientId: '02dCxal0WZK4yEi99CmZQPBirAqYhXqanI0lYPtE',
+      clientId: Config.VELNOTA_CLIENT_ID,
       redirectUrl: 'us.hearye.auth://velnota/login/callback/',
       usePKCE: true,
       scopes: ['openid'],
-      // You can find these endpoints in oauth2_provider.urls
       serviceConfiguration: {
         authorizationEndpoint: `${velnotaUrl}/oauth/v1/authorize/`,
         tokenEndpoint: `${velnotaUrl}/oauth/v1/token/`,
@@ -53,11 +52,10 @@ const velnotaUrl = 'http://localhost:8000', //'https://velnota.com',
 // https://www.pexels.com/photo/woman-in-black-shirt-holding-yellow-and-black-no-smoking-sign-2372440/
 const LandingScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  const [modalVisible, setModalVisible] = React.useState(
-    !MMKV.getBoolean(onboardedKey),
-  );
+  const [modalVisible, setModalVisible] = React.useState(false);
 
   React.useEffect(() => {
+    setModalVisible(!Storage.getBoolean(onboardedKey));
     // noinspection JSIgnoredPromiseFromCall
     prefetchConfiguration({
       warmAndPrefetchChrome: true,
@@ -143,7 +141,7 @@ const LandingScreen = () => {
             <PressableOpacity
               onPress={async () => {
                 await Linking.openURL(
-                  'https://velnota.com/accounts/register/' +
+                  `${Config.VELNOTA_ISSUER_URL}/accounts/register/` +
                     '?invite=hear-ye-0001&project=Hear%20Ye',
                 );
               }}
@@ -156,9 +154,9 @@ const LandingScreen = () => {
           </View>
           <View>
             <PressableOpacity
-              onPress={() => {
+              onPress={async () => {
                 setModalVisible(!modalVisible);
-                MMKV.set(onboardedKey, true);
+                await Storage.set(onboardedKey, true);
               }}
               style={[
                 Theme.ROUND_BUTTON_STYLE,

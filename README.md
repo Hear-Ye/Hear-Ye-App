@@ -45,6 +45,14 @@ So let's make them commit to it with our votes.
 
 This app is still in development.
 
+#### Configuration
+
+Copy `.template.env` to a `.env` file:
+
+```shell
+cp .template.env .env
+```
+
 #### Hack away
 
 We use React Native to build this because Andrew
