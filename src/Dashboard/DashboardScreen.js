@@ -8,7 +8,7 @@
  */
 
 'use strict';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {Component, useCallback, useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, useColorScheme, View} from 'react-native';
 import {Navigation} from 'react-native-navigation';
 
@@ -108,6 +108,60 @@ function GreetingText() {
   );
 }
 
+class SummaryItem extends Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  render() {
+    const {key, topic, componentId} = this.props;
+    return (
+      <PressableOpacity
+        onPress={() => {
+          if (topic.user_vote === null) {
+            Navigation.push(componentId, {
+              component: {
+                name: 'SummaryScreen',
+                options: {
+                  topBar: {
+                    title: {
+                      text: topic.title,
+                    },
+                  },
+                },
+                passProps: {
+                  component_id: componentId,
+                  topic_id: key,
+                  topic_title: topic.title,
+                },
+              },
+            });
+          } else {
+            Navigation.push(componentId, {
+              component: {
+                name: 'AnalyticsScreen',
+                options: {
+                  topBar: {
+                    title: {
+                      text: topic.title,
+                    },
+                  },
+                },
+                passProps: {
+                  component_id: componentId,
+                  topic_id: key,
+                  topic: topic,
+                },
+              },
+            });
+          }
+        }}>
+        <SummaryCard topic={topic} />
+      </PressableOpacity>
+    );
+  }
+}
+
 /**
  * Constructs the (user-logged-in) Dashboard screen
  * @return {JSX.Element}
@@ -124,30 +178,11 @@ const DashboardScreen = props => {
     switch (topic.type) {
       case 0:
         return (
-          <PressableOpacity
-            onPress={() => {
-              if (topic.user_vote === null) {
-                Navigation.push(props.componentId, {
-                  component: {
-                    name: 'SummaryScreen',
-                    options: {
-                      topBar: {
-                        title: {
-                          text: topic.title,
-                        },
-                      },
-                    },
-                    passProps: {
-                      component_id: props.componentId,
-                      topic_id: item.key,
-                      topic_title: topic.title,
-                    },
-                  },
-                });
-              }
-            }}>
-            <SummaryCard topic={topic} />
-          </PressableOpacity>
+          <SummaryItem
+            key={item.id}
+            topic={topic}
+            componentId={props.componentId}
+          />
         );
       default:
         return <></>;
