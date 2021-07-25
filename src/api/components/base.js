@@ -56,6 +56,7 @@ class ServerError extends ApiError {
  *
  * You can use it like (FYI this is a global function, so no import needed):
  *
+ * ```javascript
  * try {
  *   const response = await request(...);
  *   const data = await response.json();
@@ -75,26 +76,26 @@ class ServerError extends ApiError {
  *       break;
  *   }
  * }
+ * ```
  *
  * If you're in a synchronous function like a component, run:
  *
+ * ```javascript
  * request(...).then(response => response.json()).catch(e => {...});
+ * ```
  *
  * @param path {String} url path (without the beginning /)
- * @param method ('GET'|'POST'|'') request method
+ * @param method {('GET'|'POST')} request method
  * @param options {Object}
  * @param options.authenticated {Boolean} Whether the request uses the saved
  * access token. Default: true
  * @param options.headers {Object} additional headers (can override previous
  * default headers). Default: {}
  * @param options.body {undefined|Object|String} request body, if any
- * @throws ApiError|BadRequestError|ForbiddenError|ServerError an error that
- * has a property "response" storing the fetch response. The response has a
- * status code 400 or greater.
- * @return {Promise<Response>} returns a fetch API response if the status code
- * is between 200 to 302, inclusive (i.e. response.ok).
+ * @throws {ApiError|BadRequestError|ForbiddenError|ServerError} an error that has a property "response" storing the fetch response. The response has a status code 400 or greater.
+ * @return {Promise<Response>} returns a fetch API response if the status code is between 200 to 302, inclusive (i.e. response.ok).
  */
-const request = async (path, method, options) => {
+const request = async (path, method, options = {}) => {
   // Methodology is the exact same as to what's done at
   // https://github.com/Andrew-Chen-Wang/mobile-auth-example
   let headers = {
@@ -104,11 +105,14 @@ const request = async (path, method, options) => {
   if (
     typeof options.authenticated !== 'boolean' ? true : options.authenticated
   ) {
-    headers.Authorization = await getToken('access');
+    headers.Authorization = `Bearer ${await getToken('access')}`;
   }
   headers = {...headers, ...(options.headers ? options.headers : {})};
+  // Check if absolute
   const response = await fetch(
-    `${url}${path.startsWith('/') ? path.slice(1) : path}`,
+    path.indexOf('http://') === 0 || path.indexOf('https://') === 0
+      ? path
+      : `${url}${path.startsWith('/') ? path.slice(1) : path}`,
     {
       method: method,
       headers: headers,

@@ -7,19 +7,12 @@
  * @format
  */
 
-'use strict';
 import React from 'react';
-import {SafeAreaView, useColorScheme} from 'react-native';
+import {SafeAreaView, StyleSheet, useColorScheme} from 'react-native';
+import {Colors} from '../../../utils';
 
-import {Colors} from './utils';
-
-/**
- * Constructs the (user-logged-in) Dashboard screen
- * @return {JSX.Element}
- */
-const Dashboard = () => {
+export default () => {
   const isDarkMode = useColorScheme() === 'dark';
-
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -27,4 +20,4 @@ const Dashboard = () => {
   return <SafeAreaView style={backgroundStyle} />;
 };
 
-export default Dashboard;
+const styles = StyleSheet.create({});

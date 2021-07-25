@@ -14,11 +14,14 @@ import './src/globals.js';
 import {LandingScreen} from './src/Landing';
 import {loginNavigationRoot, dashboardNavigationRoot} from './src/utils';
 import Dashboard from './src/Dashboard';
+import {AnalyticsScreen, SummaryScreen} from './src/Dashboard/Summary';
 import {Authenticate} from './src/api/components/auth';
 
 for (const [_component_id, _component] of [
   ['LandingScreen', LandingScreen],
   ['Dashboard', Dashboard],
+  ['AnalyticsScreen', AnalyticsScreen],
+  ['SummaryScreen', SummaryScreen],
 ]) {
   Navigation.registerComponent(_component_id, () => _component);
 }

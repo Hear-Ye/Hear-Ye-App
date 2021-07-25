@@ -33,11 +33,33 @@ const loginNavigationRoot = {
 
 const dashboardNavigationRoot = {
   root: {
-    stack: {
+    bottomTabs: {
       children: [
         {
-          component: {
-            name: 'Dashboard',
+          stack: {
+            id: 'DashboardStack',
+            children: [
+              {
+                component: {
+                  name: 'Dashboard',
+                  options: {
+                    topBar: {
+                      visible: false,
+                      drawBehind: true,
+                      animate: false,
+                      height: 0,
+                    },
+                  },
+                },
+              },
+            ],
+            options: {
+              bottomTab: {
+                text: 'Home',
+                // icon: require('../images/home.png'),
+                testID: 'HOME_TAB_BAR_BUTTON',
+              },
+            },
           },
         },
       ],
