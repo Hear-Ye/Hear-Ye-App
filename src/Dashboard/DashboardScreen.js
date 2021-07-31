@@ -114,7 +114,7 @@ class SummaryItem extends Component {
   }
 
   render() {
-    const {key, topic, componentId} = this.props;
+    const {topic_id, topic, componentId} = this.props;
     return (
       <PressableOpacity
         onPress={() => {
@@ -131,7 +131,7 @@ class SummaryItem extends Component {
                 },
                 passProps: {
                   component_id: componentId,
-                  topic_id: key,
+                  topic_id: topic_id,
                   topic_title: topic.title,
                 },
               },
@@ -149,7 +149,7 @@ class SummaryItem extends Component {
                 },
                 passProps: {
                   component_id: componentId,
-                  topic_id: key,
+                  topic_id: topic_id,
                   topic: topic,
                 },
               },
@@ -179,7 +179,7 @@ const DashboardScreen = props => {
       case 0:
         return (
           <SummaryItem
-            key={item.id}
+            topic_id={item.key}
             topic={topic}
             componentId={props.componentId}
           />
