@@ -66,7 +66,13 @@ function GreetingText() {
    * @param timeArray {Array<String>}
    */
   function getRandomEl(timeArray) {
-    const combined = timeArray.concat(['Welcome back!']);
+    const combined = timeArray.concat([
+      'Welcome back!',
+      'Good to see you!',
+      "How's it going?",
+      "You're back!",
+      'Nice seeing you again!',
+    ]);
     return combined[Math.floor(Math.random() * combined.length)];
   }
 
@@ -78,22 +84,56 @@ function GreetingText() {
   if (curHr < 5 || (now.getMinutes() >= 30 && curHr === 23)) {
     if (hourState !== 1) {
       setHourState(1);
-      setGreeting(getRandomEl(['Exciting news for tonight']));
+      setGreeting(
+        getRandomEl([
+          'Ready to call it a day?',
+          'Pulling an all nighter!',
+          'Not sleepy yet?',
+          'Still up?',
+          'Good night... erm soon',
+          'Here for a bedtime story?', // Purposeful duplicate
+          'Nighty-Night!',
+        ]),
+      );
     }
   } else if (curHr < 12) {
     if (hourState !== 2) {
       setHourState(2);
-      setGreeting(getRandomEl(['Morning!', 'Top of the morning!']));
+      setGreeting(
+        getRandomEl([
+          'Morning!',
+          'Top of the morning!',
+          'Rise and shine!',
+          'Starting your day off right!',
+          'Buenos dias!',
+        ]),
+      );
     }
   } else if (curHr < 18) {
     if (hourState !== 3) {
       setHourState(3);
-      setGreeting(getRandomEl(['Good afternoon!', 'Afternoon mate']));
+      setGreeting(
+        getRandomEl([
+          'Good afternoon!',
+          'Afternoon mate',
+          "G'day",
+          'Good day!',
+          'Grab a snack!',
+          'Hope that tea tastes good!',
+        ]),
+      );
     }
   } else {
     if (hourState !== 4) {
       setHourState(4);
-      setGreeting(getRandomEl(['Good evening!']));
+      setGreeting(
+        getRandomEl([
+          'Good evening!',
+          'One last peek for you',
+          'Exciting news for tonight!',
+          'Here for a bedtime story?', // Purposeful duplicate
+        ]),
+      );
     }
   }
 
