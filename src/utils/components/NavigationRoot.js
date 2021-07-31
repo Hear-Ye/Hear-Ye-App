@@ -9,6 +9,8 @@
 
 'use strict';
 
+import {Colors} from '../index';
+
 const loginNavigationRoot = {
   root: {
     stack: {
@@ -56,7 +58,9 @@ const dashboardNavigationRoot = {
             options: {
               bottomTab: {
                 text: 'Home',
-                // icon: require('../images/home.png'),
+                icon: require('../images/home/home.png'),
+                selectedIconColor: Colors.cupertinoBlue,
+                selectedTextColor: Colors.cupertinoBlue,
                 testID: 'HOME_TAB_BAR_BUTTON',
               },
             },

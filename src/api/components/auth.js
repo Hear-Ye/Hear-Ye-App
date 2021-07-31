@@ -86,11 +86,13 @@ const RefreshToken = async () => {
 
 /**
  * Obtains both access and refresh tokens
- * @return {Promise<boolean>} whether the obtaining of tokens was successful
+ * @return {Promise<boolean|Object>} whether obtaining the auth tokens was
+ * successful. If no data, then returns a boolean. If there is data, it returns
+ * an Object.
  */
-const Authenticate = async () => {
+const Authenticate = async (force_obtain_both = false) => {
   const _refreshed = await RefreshToken();
-  if (!_refreshed) {
+  if (!_refreshed || force_obtain_both) {
     try {
       const response = await fetch(`${url}users/v1/token/obtain/`, {
         method: 'POST',
@@ -109,11 +111,35 @@ const Authenticate = async () => {
       const data = await response.json();
       await setToken('access', data.access_token);
       await setToken('refresh', data.refresh_token);
+      return data;
     } catch (e) {
       return false;
     }
   }
   return true;
+};
+
+/**
+ * Verification method to check if current authenticated user needs to do
+ * any additional tasks (such as agreeing to new terms of service).
+ * @param data {(Object|boolean)} returned data from `Authenticate` call above
+ * @returns {(Array<number>|boolean)} Returns an array of integers that
+ * represent tasks that the current user needs to perform as a method
+ * of collecting or performing tasks.
+ *
+ * Returns a boolean if param data is also type boolean.
+ *
+ * 1: Needs to set their district
+ */
+const userStillNeeds = data => {
+  if (typeof data === 'boolean') {
+    return data;
+  }
+  const needToDo = [];
+  if (data.hasOwnProperty('district') && !data.district) {
+    needToDo.push(1);
+  }
+  return needToDo;
 };
 
 const Logout = async () => {
@@ -122,4 +148,4 @@ const Logout = async () => {
   await Navigation.setRoot(loginNavigationRoot);
 };
 
-export {Authenticate, Logout, getToken, setToken};
+export {Authenticate, Logout, getToken, setToken, userStillNeeds};

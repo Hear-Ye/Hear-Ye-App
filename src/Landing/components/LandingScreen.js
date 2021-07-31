@@ -21,13 +21,18 @@ import {
   Alert,
 } from 'react-native';
 import {authorize, prefetchConfiguration} from 'react-native-app-auth';
+import {Navigation} from 'react-native-navigation';
+import Config from 'react-native-config';
+import LinearGradient from 'react-native-linear-gradient';
 
 import {Colors, dashboardNavigationRoot, Theme, Storage} from '../../utils';
 import {PressableOpacity} from '../../components/PressableOpacity';
 import Onboarding from './onboarding';
-import {Authenticate, setToken} from '../../api/components/auth';
-import {Navigation} from 'react-native-navigation';
-import Config from 'react-native-config';
+import {
+  Authenticate,
+  setToken,
+  userStillNeeds,
+} from '../../api/components/auth';
 
 const height = Dimensions.get('screen').height;
 const onboardedKey = 'onboarded-user-for-app';
@@ -68,10 +73,48 @@ const LandingScreen = () => {
       const newAuthState = await authorize(configs.velnota);
       await setToken('velnota_access', newAuthState.accessToken);
       await setToken('velnota_refresh', newAuthState.refreshToken);
-      if (await Authenticate()) {
-        await Navigation.setRoot(dashboardNavigationRoot);
+      // Finish registration process by showing a bunch of modals.
+      // once we pop all numbers from the array, we can finally show app
+      const data = userStillNeeds(await Authenticate());
+      if (typeof data === 'boolean') {
+        if (data) {
+          await Navigation.setRoot(dashboardNavigationRoot);
+        } else {
+          Alert.alert('Failed to login. Please try again.');
+        }
       } else {
-        Alert.alert('Failed to login');
+        // The way this works is that we have an array with what to do.
+        // We create modals that set configuration values until there's
+        // nothing left to do... Except I just want to get this published
+        // so instead I'm just going to show a modal lmao
+        if (!data.district?.district) {
+          await Navigation.showModal({
+            stack: {
+              children: [
+                {
+                  component: {
+                    name: 'SELECT_DISTRICT_MODAL',
+                    options: {
+                      topBar: {
+                        title: {
+                          text: 'Select your current district',
+                        },
+                      },
+                      hardwareBackButton: {
+                        dismissModalOnPress: false,
+                      },
+                      modal: {
+                        swipeToDismiss: false,
+                      },
+                    },
+                  },
+                },
+              ],
+            },
+          });
+        } else {
+          await Navigation.setRoot(dashboardNavigationRoot);
+        }
       }
     } catch (e) {}
   }, []);
@@ -83,7 +126,7 @@ const LandingScreen = () => {
         presentationStyle="pageSheet"
         visible={modalVisible}
         onRequestClose={() => {
-          setModalVisible(!modalVisible);
+          setModalVisible(false);
         }}>
         <Onboarding
           onDone={() => {
@@ -101,71 +144,76 @@ const LandingScreen = () => {
           },
         ]}
         imageStyle={styles.image}>
-        <View style={[styles.padded, {bottom: height / 2}]}>
-          <Text
-            style={[
-              styles.text,
-              {
-                color: isDarkMode ? Colors.white : Colors.black,
-              },
-            ]}>
-            Hear Ye!
-          </Text>
-        </View>
-        <View style={styles.padded}>
-          <Text
-            style={[
-              styles.text,
-              styles.smallFontSize,
-              {
-                color: isDarkMode ? Colors.white : Colors.black,
-              },
-            ]}>
-            Because We Should Be Talking
-          </Text>
-        </View>
-        <View style={[styles.padded, styles.buttonGroup]}>
-          <View>
-            <PressableOpacity
-              onPress={() => {
-                handleAuthorize();
-              }}
+        <LinearGradient
+          style={styles.linearGradient}
+          locations={[0.04, 0.5]}
+          colors={[Colors.black, 'rgba(0, 0, 0, 0)']}>
+          <View style={[styles.padded, {bottom: height / 2}]}>
+            <Text
               style={[
-                Theme.DEFAULT_BUTTON_STYLE,
-                {backgroundColor: Colors.primary},
+                styles.text,
+                {
+                  color: isDarkMode ? Colors.white : Colors.black,
+                },
               ]}>
-              <Text style={{color: Colors.white}}>Login</Text>
-            </PressableOpacity>
+              Hear Ye!
+            </Text>
           </View>
-          <View>
-            <PressableOpacity
-              onPress={async () => {
-                await Linking.openURL(
-                  `${Config.VELNOTA_ISSUER_URL}/accounts/register/` +
-                    '?invite=hear-ye-0001&project=Hear%20Ye',
-                );
-              }}
+          <View style={styles.padded}>
+            <Text
               style={[
-                Theme.DEFAULT_BUTTON_STYLE,
-                {backgroundColor: Colors.red},
+                styles.text,
+                styles.smallFontSize,
+                {
+                  color: isDarkMode ? Colors.white : Colors.black,
+                },
               ]}>
-              <Text style={{color: Colors.white}}>Register</Text>
-            </PressableOpacity>
+              Because We Should Be Talking
+            </Text>
           </View>
-          <View>
-            <PressableOpacity
-              onPress={async () => {
-                setModalVisible(!modalVisible);
-                await Storage.set(onboardedKey, true);
-              }}
-              style={[
-                Theme.ROUND_BUTTON_STYLE,
-                {backgroundColor: Colors.light},
-              ]}>
-              <Text style={{color: Colors.dark}}>?</Text>
-            </PressableOpacity>
+          <View style={[styles.padded, styles.buttonGroup]}>
+            <View>
+              <PressableOpacity
+                onPress={() => {
+                  handleAuthorize();
+                }}
+                style={[
+                  Theme.DEFAULT_BUTTON_STYLE,
+                  {backgroundColor: Colors.primary},
+                ]}>
+                <Text style={{color: Colors.white}}>Login</Text>
+              </PressableOpacity>
+            </View>
+            <View>
+              <PressableOpacity
+                onPress={async () => {
+                  await Linking.openURL(
+                    `${Config.VELNOTA_ISSUER_URL}/accounts/register/` +
+                      '?invite=hear-ye-0001&project=Hear%20Ye',
+                  );
+                }}
+                style={[
+                  Theme.DEFAULT_BUTTON_STYLE,
+                  {backgroundColor: Colors.red},
+                ]}>
+                <Text style={{color: Colors.white}}>Register</Text>
+              </PressableOpacity>
+            </View>
+            <View>
+              <PressableOpacity
+                onPress={async () => {
+                  setModalVisible(vis => !vis);
+                  await Storage.set(onboardedKey, true);
+                }}
+                style={[
+                  Theme.ROUND_BUTTON_STYLE,
+                  {backgroundColor: Colors.light},
+                ]}>
+                <Text style={{color: Colors.dark}}>?</Text>
+              </PressableOpacity>
+            </View>
           </View>
-        </View>
+        </LinearGradient>
       </ImageBackground>
     </View>
   );
@@ -196,6 +244,14 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     marginLeft: -128,
     marginBottom: -132,
+  },
+  linearGradient: {
+    backgroundColor: 'transparent',
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   text: {
     fontSize: 70,

@@ -18,5 +18,6 @@ export default {
   dark: '#444',
   darker: '#222',
   black: '#000',
+  cupertinoBlue: '#006ee6',
   approve: '#90ee90',
 };

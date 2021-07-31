@@ -30,6 +30,14 @@ export const ROUND_BUTTON_STYLE = {
   },
 };
 
+// noinspection JSSuspiciousNameCombination
+export const LARGE_ROUND_BUTTON_STYLE = {
+  ...ROUND_BUTTON_STYLE,
+  ...{
+    width: BUTTON_HEIGHT * 2,
+  },
+};
+
 const SIZES = {
   font: 'Teko-Regular',
 
@@ -38,6 +46,7 @@ const SIZES = {
   BUTTON_SHADOW_RADIUS: 3,
   DEFAULT_BUTTON_STYLE: DEFAULT_BUTTON_STYLE,
   ROUND_BUTTON_STYLE: ROUND_BUTTON_STYLE,
+  LARGE_ROUND_BUTTON_STYLE: LARGE_ROUND_BUTTON_STYLE,
 };
 
 export default SIZES;

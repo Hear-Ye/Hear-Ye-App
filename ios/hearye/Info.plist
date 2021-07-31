@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>Location is only used once to select your district (unless you change districts).</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Teko-Regular.ttf</string>
