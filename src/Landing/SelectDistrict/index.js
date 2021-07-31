@@ -47,7 +47,7 @@ import Config from 'react-native-config';
 
 import Storage from '../../utils/components/Storage';
 import {PressableOpacity} from '../../components/PressableOpacity';
-import {Colors, Theme} from '../../utils';
+import {Colors, dashboardNavigationRoot, Theme} from '../../utils';
 
 MapboxGL.setAccessToken(Config.MAPBOX_TOKEN);
 
@@ -216,6 +216,7 @@ export default ({getLocationCallback, componentId}) => {
         body: {state: state, district: district},
       });
       await Navigation.dismissModal(componentId);
+      await Navigation.setRoot(dashboardNavigationRoot);
     } catch (e) {
       console.debug(e);
       Alert.alert(
