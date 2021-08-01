@@ -15,5 +15,13 @@ import {
   dashboardNavigationRoot,
 } from './components/NavigationRoot';
 import Storage from './components/Storage';
+import {useFetch} from './functions/infiniteFetch';
 
-export {Colors, Theme, loginNavigationRoot, dashboardNavigationRoot, Storage};
+export {
+  Colors,
+  Theme,
+  Storage,
+  useFetch,
+  loginNavigationRoot,
+  dashboardNavigationRoot,
+};

@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.15.5",
     "@react-native-mapbox-gl/maps": "^8.2.1",
+    "prop-types": "^15.7.2",
     "react": "17.0.1",
     "react-native": "0.64.2",
     "react-native-app-auth": "6.4.0",

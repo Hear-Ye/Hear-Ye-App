@@ -7,12 +7,22 @@
  * @format
  */
 
+'use strict';
 import React from 'react';
-import {Dimensions, StyleSheet, Text, useColorScheme, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import {PieChart} from 'react-native-chart-kit';
+import {Navigation} from 'react-native-navigation';
 
 import {RepresentativeImage} from '../../components/RepresentativeImage';
-import {Colors} from '../../../utils';
+import {Colors, Theme} from '../../../utils';
+import {PressableOpacity} from '../../../components/PressableOpacity';
 
 /**
  * @typedef {RepresentativeInfo} RepresentativeWithVoteInfo
@@ -24,16 +34,17 @@ import {Colors} from '../../../utils';
  * Creates a container having the representative image and info side-by-side
  * @param topic {TopicInfo}
  * @param info {RepresentativeWithVoteInfo}
+ * @param componentId {string} component ID from the original screen
  * @returns {JSX.Element}
  */
-const RepresentativeInfoContainer = ({topic, info}) => {
+const RepresentativeInfoContainer = ({topic, info, componentId}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const textColor = {
     color: isDarkMode ? Colors.white : Colors.black,
   };
 
   // Congressman prefix
-  const personPrefix = info.district === null ? 'Sen.' : 'Rep.';
+  const personPrefix = typeof info.district === 'number' ? 'Rep.' : 'Sen.';
 
   // Calculate whether voted with district
   const districtMajorityVote = Object.keys(topic.total_district_votes)
@@ -51,27 +62,67 @@ const RepresentativeInfoContainer = ({topic, info}) => {
         <RepresentativeImage info={info} />
       </View>
       <View style={[styles.column, styles.rowColumn]}>
-        <Text style={[textColor, styles.longText]}>
-          {`${personPrefix} ${info.name}`}
-        </Text>
-        <Text style={[textColor, styles.longText]}>
-          {info.state +
-            (info.district === null
-              ? ''
-              : `-${info.district}` + ` (${info.party})`)}
-        </Text>
-        <Text
+        <View style={styles.longTextContainer}>
+          <Text style={[textColor, styles.longText]}>
+            {`${personPrefix} ${info.name}`}
+          </Text>
+        </View>
+        <View style={styles.longTextContainer}>
+          <Text style={[textColor, styles.longText]}>
+            {info.state +
+              (info.district === null ? '' : `-${info.district}`) +
+              ` (${info.party})`}
+          </Text>
+        </View>
+        <View style={styles.longTextContainer}>
+          <Text
+            style={[
+              textColor,
+              styles.longText,
+            ]}>{`Voted: ${info.vote_name}`}</Text>
+        </View>
+        <View style={styles.longTextContainer}>
+          <Text
+            style={[
+              textColor,
+              styles.longText,
+            ]}>{`Did the ${personPrefix} vote with the district? ${
+            repVotedWithDistrict ? '✅' : '❌'
+          }`}</Text>
+        </View>
+        <PressableOpacity
+          onPress={async () => {
+            await Navigation.push(componentId, {
+              component: {
+                name: 'RepresentativeScreen',
+                options: {
+                  topBar: {
+                    title: {
+                      text: info.name,
+                    },
+                    backButton: {
+                      title: 'Summary',
+                      // since title of topic may be long
+                      displayMode: 'minimal',
+                    },
+                  },
+                },
+                passProps: {
+                  rep_info: info,
+                  repID: info.id,
+                },
+              },
+            });
+          }}
           style={[
-            textColor,
-            styles.longText,
-          ]}>{`Voted: ${info.vote_name}`}</Text>
-        <Text
-          style={[
-            textColor,
-            styles.longText,
-          ]}>{`${personPrefix} voted with District? ${
-          repVotedWithDistrict ? '✅' : '❌'
-        }`}</Text>
+            Theme.DEFAULT_BUTTON_STYLE,
+            {backgroundColor: Colors.cupertinoBlue},
+          ]}>
+          <Text
+            style={{
+              color: Colors.white,
+            }}>{`View More Details about the ${personPrefix} >`}</Text>
+        </PressableOpacity>
       </View>
     </View>
   );
@@ -154,9 +205,10 @@ const ConstructVotePieChart = ({votes}) => {
  * @param topic {TopicInfo} topic information
  * @param summary_data {Object} more data from the summary
  * @param summary_data.representatives {Array<RepresentativeInfo>}
+ * @param componentId {string} component ID from the original screen
  * @returns {JSX.Element}
  */
-export default ({layoutCB, topic, summary_data}) => {
+export default ({layoutCB, topic, summary_data, componentId}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const textColor = {
     color: isDarkMode ? Colors.white : Colors.black,
@@ -167,10 +219,18 @@ export default ({layoutCB, topic, summary_data}) => {
       <Text style={[styles.h1, textColor, styles.centerText]}>
         Your Representative + Senators
       </Text>
-      {summary_data.representatives &&
+      {summary_data.representatives ? (
         summary_data.representatives.map((info, key) => (
-          <RepresentativeInfoContainer topic={topic} info={info} key={key} />
-        ))}
+          <RepresentativeInfoContainer
+            topic={topic}
+            info={info}
+            key={key}
+            componentId={componentId}
+          />
+        ))
+      ) : (
+        <ActivityIndicator size="large" style={Theme.VERTICAL_PADDING} />
+      )}
       <Text style={[styles.h1, textColor, styles.centerText]}>Votes</Text>
       <ConstructVotePieChart votes={topic.total_votes} />
       <ConstructVotePieChart votes={topic.total_district_votes} />
@@ -187,10 +247,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'center',
+    flexShrink: 1,
     marginVertical: 5,
   },
   column: {marginHorizontal: 5},
-  longText: {flex: 1, flexWrap: 'wrap', flexShrink: 1},
+  longTextContainer: {flexDirection: 'row', flexShrink: 1},
+  longText: {flex: 1, flexWrap: 'wrap'},
   chartCard: {
     justifyContent: 'center',
     margin: 5,

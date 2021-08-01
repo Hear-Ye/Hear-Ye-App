@@ -8,57 +8,11 @@
  */
 
 'use strict';
-import React, {Component, useCallback, useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {FlatList, StyleSheet, Text, useColorScheme, View} from 'react-native';
-import {Navigation} from 'react-native-navigation';
 
-import {Colors} from '../utils';
-import SummaryCard from './Summary/card';
-import {PressableOpacity} from '../components/PressableOpacity';
-
-async function getTopics(next) {
-  try {
-    const response = await request(next, 'GET', {});
-    const data = await response.json();
-    return {
-      next: data.next,
-      data: data.results.map(({id, ...rest}) => ({
-        key: id,
-        data: rest,
-      })),
-    };
-  } catch (e) {
-    return {
-      next: null,
-      data: [],
-    };
-  }
-}
-
-function useTopics() {
-  const [page, setPage] = useState('content/topic/');
-  const [shouldFetch, setShouldFetch] = useState(true);
-  const [topics, setTopics] = useState([]);
-  const fetchMore = useCallback(() => setShouldFetch(true), []);
-
-  useEffect(() => {
-    // prevent fetching for other state changes
-    if (!shouldFetch || !page) {
-      return;
-    }
-
-    const fetch = async () => {
-      const newData = await getTopics(page);
-      setShouldFetch(false);
-      setTopics(oldData => [...oldData, ...newData.data]);
-      setPage(newData.next);
-    };
-
-    fetch();
-  }, [page, shouldFetch]);
-
-  return [topics, fetchMore];
-}
+import {Colors, useFetch} from '../utils';
+import {SummaryItem} from './Summary/card';
 
 function GreetingText() {
   /**
@@ -148,47 +102,22 @@ function GreetingText() {
   );
 }
 
-class SummaryItem extends Component {
-  constructor(props) {
-    super(props);
-    const {topic_id, topic} = this.props;
-    this.state = {topic: topic, user_vote: topic.user_vote, topic_id: topic_id};
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    return this.state.user_vote !== nextState.user_vote;
-  }
-
-  setUserVote = user_vote => {
-    this.setState({user_vote: user_vote});
-  };
-
-  render() {
-    const {topic_id, topic, componentId} = this.props;
-    return (
-      <PressableOpacity
-        onPress={() => {
-          Navigation.push(componentId, {
-            component: {
-              name: 'SummaryScreen',
-              options: {
-                topBar: {
-                  title: {
-                    text: topic.title,
-                  },
-                },
-              },
-              passProps: {
-                topic_id: topic_id,
-                topic: topic,
-                voteCb: this.setUserVote,
-              },
-            },
-          });
-        }}>
-        <SummaryCard topic={topic} user_vote={this.state.user_vote} />
-      </PressableOpacity>
-    );
+async function getTopics(next) {
+  try {
+    const response = await request(next, 'GET');
+    const data = await response.json();
+    return {
+      next: data.next,
+      data: data.results.map(({id, ...rest}) => ({
+        key: id,
+        data: rest,
+      })),
+    };
+  } catch (e) {
+    return {
+      next: null,
+      data: [],
+    };
   }
 }
 
@@ -202,7 +131,7 @@ const DashboardScreen = props => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.light,
   };
 
-  const [data, fetchMore] = useTopics();
+  const [data, fetchMore] = useFetch('content/topic/', getTopics);
   const renderItem = ({item}) => {
     const topic = item.data;
     switch (topic.type) {

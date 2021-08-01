@@ -8,11 +8,13 @@
  */
 
 'use strict';
-import React from 'react';
+import React, {Component} from 'react';
 import {Image, StyleSheet, Text, useColorScheme, View} from 'react-native';
+import {Navigation} from 'react-native-navigation';
 
 import {Card} from '../../components/Card';
 import {Colors} from '../../utils';
+import {PressableOpacity} from '../../components/PressableOpacity';
 
 const styles = StyleSheet.create({
   container: {
@@ -35,7 +37,7 @@ const styles = StyleSheet.create({
  * @param user_vote {number} user vote (passed as state from previous component)
  * @return {JSX.Element}
  */
-export default ({topic, user_vote}) => {
+const SummaryCard = ({topic, user_vote}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const cardStyle = {backgroundColor: isDarkMode ? Colors.black : Colors.white};
   const additionalTitleStyle = {
@@ -82,3 +84,51 @@ export default ({topic, user_vote}) => {
     </Card>
   );
 };
+
+export class SummaryItem extends Component {
+  constructor(props) {
+    super(props);
+    const {topic_id, topic} = this.props;
+    this.state = {topic: topic, user_vote: topic.user_vote, topic_id: topic_id};
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.user_vote !== nextState.user_vote;
+  }
+
+  setUserVote = user_vote => {
+    this.setState({user_vote: user_vote});
+  };
+
+  render() {
+    const {topic_id, topic, componentId, backButtonTitle} = this.props;
+    return (
+      <PressableOpacity
+        onPress={() => {
+          Navigation.push(componentId, {
+            component: {
+              name: 'SummaryScreen',
+              options: {
+                topBar: {
+                  title: {
+                    text: topic.title,
+                  },
+                  backButton: {
+                    title: backButtonTitle ? backButtonTitle : 'Dashboard',
+                    displayMode: 'minimal',
+                  },
+                },
+              },
+              passProps: {
+                topic_id: topic_id,
+                topic: topic,
+                voteCb: this.setUserVote,
+              },
+            },
+          });
+        }}>
+        <SummaryCard topic={topic} user_vote={this.state.user_vote} />
+      </PressableOpacity>
+    );
+  }
+}

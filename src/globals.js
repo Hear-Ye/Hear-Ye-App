@@ -13,6 +13,7 @@ import {
   ApiError,
   BadRequestError,
   ForbiddenError,
+  NotFoundError,
   ServerError,
 } from './api';
 
@@ -20,4 +21,5 @@ global.request = request;
 global.ApiError = ApiError;
 global.BadRequestError = BadRequestError;
 global.ForbiddenError = ForbiddenError;
+global.NotFoundError = NotFoundError;
 global.ServerError = ServerError;

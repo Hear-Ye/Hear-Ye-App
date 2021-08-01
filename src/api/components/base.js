@@ -14,7 +14,7 @@ import url from './url';
 /**
  * Base ApiError that extends Error and includes a property response
  */
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(message, response) {
     super(message);
     this.name = 'ApiError';
@@ -25,7 +25,7 @@ class ApiError extends Error {
 /**
  * 400 status code error response
  */
-class BadRequestError extends ApiError {
+export class BadRequestError extends ApiError {
   constructor(message, response) {
     super(message, response);
   }
@@ -34,7 +34,16 @@ class BadRequestError extends ApiError {
 /**
  * 403 status code error response
  */
-class ForbiddenError extends ApiError {
+export class ForbiddenError extends ApiError {
+  constructor(message, response) {
+    super(message, response);
+  }
+}
+
+/**
+ * 404 status code error response
+ */
+export class NotFoundError extends ApiError {
   constructor(message, response) {
     super(message, response);
   }
@@ -43,7 +52,7 @@ class ForbiddenError extends ApiError {
 /**
  * 500-599 status code error response
  */
-class ServerError extends ApiError {
+export class ServerError extends ApiError {
   constructor(message, response) {
     super(message, response);
   }
@@ -95,7 +104,7 @@ class ServerError extends ApiError {
  * @throws {ApiError|BadRequestError|ForbiddenError|ServerError} an error that has a property "response" storing the fetch response. The response has a status code 400 or greater.
  * @return {Promise<Response>} returns a fetch API response if the status code is between 200 to 302, inclusive (i.e. response.ok).
  */
-const request = async (path, method, options = {}) => {
+export const request = async (path, method, options = {}) => {
   // Methodology is the exact same as to what's done at
   // https://github.com/Andrew-Chen-Wang/mobile-auth-example
   let headers = {
@@ -138,6 +147,8 @@ const request = async (path, method, options = {}) => {
         throw new BadRequestError(response.statusText, response);
       case 403:
         throw new ForbiddenError(response.statusText, response);
+      case 404:
+        throw new NotFoundError(response.statusText, response);
       default:
         if (response.status >= 500) {
           throw new ServerError(response.statusText, response);
@@ -147,5 +158,3 @@ const request = async (path, method, options = {}) => {
     }
   }
 };
-
-export {request, ApiError, BadRequestError, ForbiddenError, ServerError};

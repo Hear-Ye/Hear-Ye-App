@@ -123,11 +123,15 @@ for (const x of document.body.querySelectorAll("details")) {
  * @param topic_id {number} topic id
  * @param topic {TopicInfo} topic information
  * @param voteCb {function} callback to dashboard to update the SummaryCard
+ * @param componentId component ID from React Native Navigation
  * @returns {JSX.Element}
  */
-export default ({topic_id, topic, voteCb}) => {
+export default ({topic_id, topic, voteCb, componentId}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const textColor = isDarkMode ? Colors.white : Colors.black;
+  const backgroundStyle = {
+    backgroundColor: isDarkMode ? Colors.darker : Colors.light,
+  };
   // Solution for utilizing in ScrollView:
   // https://medium.com/@caphun/reactnative-why-your-webview-disappears-inside-scrollview-c6057c9ac6dd
   const [webViewHeight, setWebViewHeight] = useState(0);
@@ -189,6 +193,7 @@ export default ({topic_id, topic, voteCb}) => {
     <ScrollView
       contentContainerStyle={[
         styles.scrollView,
+        backgroundStyle,
         {
           height:
             webViewHeight +
@@ -201,7 +206,11 @@ export default ({topic_id, topic, voteCb}) => {
           onLayout={e => {
             getDimensionsFromLayout(e, 0);
           }}>
-          <Analytics topic={topic} summary_data={data} />
+          <Analytics
+            topic={topic}
+            summary_data={data}
+            componentId={componentId}
+          />
         </View>
       )}
       {isLoading && (
@@ -210,6 +219,7 @@ export default ({topic_id, topic, voteCb}) => {
             // Intentionally 1 for overriding in the bottom button section
             getDimensionsFromLayout(e, 1);
           }}
+          style={styles.highTopMargin}
           size="large"
         />
       )}
@@ -226,7 +236,7 @@ export default ({topic_id, topic, voteCb}) => {
         injectedJavaScript={injectedJavascript}
         onNavigationStateChange={handleWebViewStateChange}
       />
-      {!isLoading && (
+      {!isLoading && voteCb && (
         <View
           onLayout={e => {
             // Intentionally 1 for overriding ActivityIndicator height
@@ -279,6 +289,7 @@ const styles = StyleSheet.create({
   },
   longText: {flex: 1, flexWrap: 'wrap', flexShrink: 1},
   h1: {fontSize: 20},
+  highTopMargin: {marginTop: 12},
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',

@@ -16,6 +16,7 @@ import SelectDistrict from './src/Landing/SelectDistrict';
 import {loginNavigationRoot, dashboardNavigationRoot} from './src/utils';
 import Dashboard from './src/Dashboard';
 import {SummaryScreen} from './src/Dashboard/Summary';
+import RepresentativeScreen from './src/Dashboard/Representative';
 import {Authenticate} from './src/api/components/auth';
 
 for (const [_component_id, _component] of [
@@ -23,6 +24,7 @@ for (const [_component_id, _component] of [
   ['Dashboard', Dashboard],
   ['SummaryScreen', SummaryScreen],
   ['SELECT_DISTRICT_MODAL', SelectDistrict],
+  ['RepresentativeScreen', RepresentativeScreen],
 ]) {
   Navigation.registerComponent(_component_id, () => _component);
 }

@@ -51,6 +51,10 @@ const dashboardNavigationRoot = {
                       animate: false,
                       height: 0,
                     },
+                    backButton: {
+                      title: 'Dashboard',
+                      displayMode: 'minimal',
+                    },
                   },
                 },
               },
