@@ -13,19 +13,14 @@ import {Navigation} from 'react-native-navigation';
 import './src/globals.js';
 import {LandingScreen} from './src/Landing';
 import SelectDistrict from './src/Landing/SelectDistrict';
-import {
-  loginNavigationRoot,
-  dashboardNavigationRoot,
-  Colors,
-} from './src/utils';
+import {loginNavigationRoot, dashboardNavigationRoot} from './src/utils';
 import Dashboard from './src/Dashboard';
-import {AnalyticsScreen, SummaryScreen} from './src/Dashboard/Summary';
+import {SummaryScreen} from './src/Dashboard/Summary';
 import {Authenticate} from './src/api/components/auth';
 
 for (const [_component_id, _component] of [
   ['LandingScreen', LandingScreen],
   ['Dashboard', Dashboard],
-  ['AnalyticsScreen', AnalyticsScreen],
   ['SummaryScreen', SummaryScreen],
   ['SELECT_DISTRICT_MODAL', SelectDistrict],
 ]) {

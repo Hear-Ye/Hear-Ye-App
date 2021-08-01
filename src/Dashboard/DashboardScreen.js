@@ -149,54 +149,44 @@ function GreetingText() {
 }
 
 class SummaryItem extends Component {
-  shouldComponentUpdate() {
-    return false;
+  constructor(props) {
+    super(props);
+    const {topic_id, topic} = this.props;
+    this.state = {topic: topic, user_vote: topic.user_vote, topic_id: topic_id};
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.state.user_vote !== nextState.user_vote;
+  }
+
+  setUserVote = user_vote => {
+    this.setState({user_vote: user_vote});
+  };
 
   render() {
     const {topic_id, topic, componentId} = this.props;
     return (
       <PressableOpacity
         onPress={() => {
-          if (topic.user_vote === null) {
-            Navigation.push(componentId, {
-              component: {
-                name: 'SummaryScreen',
-                options: {
-                  topBar: {
-                    title: {
-                      text: topic.title,
-                    },
+          Navigation.push(componentId, {
+            component: {
+              name: 'SummaryScreen',
+              options: {
+                topBar: {
+                  title: {
+                    text: topic.title,
                   },
                 },
-                passProps: {
-                  component_id: componentId,
-                  topic_id: topic_id,
-                  topic_title: topic.title,
-                },
               },
-            });
-          } else {
-            Navigation.push(componentId, {
-              component: {
-                name: 'AnalyticsScreen',
-                options: {
-                  topBar: {
-                    title: {
-                      text: topic.title,
-                    },
-                  },
-                },
-                passProps: {
-                  component_id: componentId,
-                  topic_id: topic_id,
-                  topic: topic,
-                },
+              passProps: {
+                topic_id: topic_id,
+                topic: topic,
+                voteCb: this.setUserVote,
               },
-            });
-          }
+            },
+          });
         }}>
-        <SummaryCard topic={topic} />
+        <SummaryCard topic={topic} user_vote={this.state.user_vote} />
       </PressableOpacity>
     );
   }

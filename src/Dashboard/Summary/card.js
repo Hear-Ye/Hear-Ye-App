@@ -30,12 +30,12 @@ const styles = StyleSheet.create({
 /**
  * Creates a Card for Summary topic types
  * @param topic {Object}
- * @param topic.user_vote {(Number|null)} User vote as a number
  * @param topic.title {String} Summary title
  * @param topic.created {String} ISO-8601 string with ending Z to parse as UTC
+ * @param user_vote {number} user vote (passed as state from previous component)
  * @return {JSX.Element}
  */
-export default ({topic}) => {
+export default ({topic, user_vote}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const cardStyle = {backgroundColor: isDarkMode ? Colors.black : Colors.white};
   const additionalTitleStyle = {
@@ -51,7 +51,7 @@ export default ({topic}) => {
     width: '15%',
     height: 40,
   };
-  switch (topic.user_vote) {
+  switch (user_vote) {
     case 0:
       voteStyle.tintColor = Colors.red;
       multiplier = -1;
@@ -60,7 +60,7 @@ export default ({topic}) => {
       voteStyle.tintColor = Colors.approve;
       break;
   }
-  if (typeof topic.user_vote !== 'number') {
+  if (typeof user_vote !== 'number') {
     additionalTitleStyle.width = '100%';
   }
   voteStyle.transform = [
@@ -72,7 +72,7 @@ export default ({topic}) => {
     <Card cardStyle={cardStyle}>
       <View style={styles.container}>
         <Text style={[styles.title, additionalTitleStyle]}>{topic.title}</Text>
-        {topic.user_vote !== null && (
+        {user_vote !== null && (
           <Image style={voteStyle} source={require('../thumbsup.png')} />
         )}
       </View>

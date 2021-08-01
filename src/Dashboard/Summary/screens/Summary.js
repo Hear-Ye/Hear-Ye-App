@@ -14,38 +14,30 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  useColorScheme,
   View,
 } from 'react-native';
 import {WebView} from 'react-native-webview';
-import {Navigation} from 'react-native-navigation';
 
 import {handleWebViewStateChange} from '../../../utils/functions/webview';
 import {PressableOpacity} from '../../../components/PressableOpacity';
+import Analytics from './Analytics';
 import {Colors, Theme} from '../../../utils';
 
-const sendInitialVote = async (component_id, topic_id, topic_title, vote) => {
+const sendInitialVote = async (topic_id, vote, voteCbs) => {
+  // server automatically handles whether it was initial or updated vote
   try {
     await request('voting/vote/', 'POST', {
       body: JSON.stringify({topic: topic_id, vote: vote}),
     });
-    await Navigation.pop(component_id);
-    await Navigation.push('DashboardStack', {
-      component: {
-        name: 'AnalyticsScreen',
-        options: {
-          topBar: {
-            title: {
-              text: topic_title,
-            },
-          },
-        },
-      },
+    voteCbs.forEach(voteCb => {
+      voteCb(vote);
     });
   } catch (e) {}
 };
 
 function generateHTML(html) {
-  // Requires extra 3 <br>'s for some reason. Not sure how to reliably
+  // Requires extra <br>'s for some reason. Not sure how to reliably
   // get the scroll height of the document
   return `<!DOCTYPE html><html lang="en">
 <head>
@@ -113,10 +105,33 @@ for (const x of document.body.querySelectorAll("details")) {
 }
 `;
 
-export default ({component_id, topic_id, topic_title}) => {
+/**
+ * @typedef {Object} TopicInfo topic information
+ * @property {string} created ISO8601 string for when the topic was created/
+ * when we published this summary
+ * @property {string} title topic title
+ * @property {(number|null)} user_vote user vote as an integer or null
+ * @property {Object.<string, number>} total_district_votes each key has a
+ * prefix district_total_X where X represents the vote type as an integer and
+ * value is number of votes.
+ * @property {Object.<string, number>} total_votes like total_district_votes, keys
+ * follow same pattern but it's total_X.
+ */
+
+/**
+ * Summary/Analytics Screen from Dashboard to here.
+ * @param topic_id {number} topic id
+ * @param topic {TopicInfo} topic information
+ * @param voteCb {function} callback to dashboard to update the SummaryCard
+ * @returns {JSX.Element}
+ */
+export default ({topic_id, topic, voteCb}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+  const textColor = isDarkMode ? Colors.white : Colors.black;
   // Solution for utilizing in ScrollView:
   // https://medium.com/@caphun/reactnative-why-your-webview-disappears-inside-scrollview-c6057c9ac6dd
   const [webViewHeight, setWebViewHeight] = useState(0);
+  const [additionalScrollHeight, setAdditionalScrollHeight] = useState({});
   const onMessage = event => {
     setWebViewHeight(Number(event.nativeEvent.data));
     setLoading(false);
@@ -124,6 +139,8 @@ export default ({component_id, topic_id, topic_title}) => {
 
   const [isLoading, setLoading] = useState(true);
   const [data, setData] = useState({});
+  const [userVote, setUserVote] = useState(topic.user_vote);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
     const getSummary = async () => {
@@ -143,46 +160,113 @@ export default ({component_id, topic_id, topic_title}) => {
     };
 
     getSummary();
+    setIsMounted(true);
   }, [topic_id]);
+
+  const getDimensionsFromLayout = (e, key) => {
+    // Don't question this please... idk how I got it to work; I tried using
+    // FlatList + Header/Footer components (like I would with Swift) and tried
+    // using onLayout on every single component. Why this works is beyond me.
+    // Best explanation I can give is that each View is calculating its children
+    if (isMounted) {
+      const LHeight = e.nativeEvent.layout.height;
+      const merging = {};
+      merging[key] = LHeight ? LHeight : 0;
+      setAdditionalScrollHeight({...additionalScrollHeight, ...merging});
+    }
+  };
+
+  /**
+   * Sends initial or updated vote
+   * @param vote {number} the user vote to be sent
+   * @returns {Promise<void>}
+   */
+  const sendVote = async vote => {
+    await sendInitialVote(topic_id, vote, [voteCb, setUserVote]);
+  };
 
   return (
     <ScrollView
       contentContainerStyle={[
         styles.scrollView,
         {
-          height: webViewHeight,
+          height:
+            webViewHeight +
+            // summing up the views' heights
+            Object.values(additionalScrollHeight).reduce((a, b) => a + b, 0),
         },
       ]}>
+      {typeof userVote === 'number' && (
+        <View
+          onLayout={e => {
+            getDimensionsFromLayout(e, 0);
+          }}>
+          <Analytics topic={topic} summary_data={data} />
+        </View>
+      )}
+      {isLoading && (
+        <ActivityIndicator
+          onLayout={e => {
+            // Intentionally 1 for overriding in the bottom button section
+            getDimensionsFromLayout(e, 1);
+          }}
+          size="large"
+        />
+      )}
       <WebView
         style={!isLoading || styles.transparentWebView}
         originWhitelist={['*']}
         source={{html: generateHTML(data.content)}}
         scrollEnabled={false}
         startInLoadingState={true}
-        renderLoading={() => <ActivityIndicator size="large" />}
+        // We have to use ActivityIndicator outside instead of in renderLoading
+        // to properly calculate the height for the scroll view
+        renderLoading={() => <></>}
         onMessage={onMessage}
         injectedJavaScript={injectedJavascript}
         onNavigationStateChange={handleWebViewStateChange}
       />
       {!isLoading && (
-        <View style={styles.buttonContainer}>
-          <PressableOpacity
-            onPress={() => {
-              sendInitialVote(component_id, topic_id, topic_title, 1);
+        <View
+          onLayout={e => {
+            // Intentionally 1 for overriding ActivityIndicator height
+            getDimensionsFromLayout(e, 1);
+          }}>
+          <View
+            style={{
+              borderBottomColor: textColor,
+              borderBottomWidth: StyleSheet.hairlineWidth,
             }}
-            style={[
-              Theme.DEFAULT_BUTTON_STYLE,
-              {backgroundColor: Colors.approve},
-            ]}>
-            <Text>👍 Approve</Text>
-          </PressableOpacity>
-          <PressableOpacity
-            onPress={() => {
-              sendInitialVote(component_id, topic_id, topic_title, 0);
-            }}
-            style={[Theme.DEFAULT_BUTTON_STYLE, {backgroundColor: Colors.red}]}>
-            <Text style={{color: Colors.white}}>👎 Disapprove</Text>
-          </PressableOpacity>
+          />
+          <View>
+            <Text style={[styles.centerText, {color: textColor}]}>
+              {typeof userVote === 'number'
+                ? '(You can update your vote here, but your initial vote will still be stored)'
+                : "(Update your vote as many times as you'd like. Your initial vote is still stored)"}
+            </Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <PressableOpacity
+              onPress={async () => {
+                await sendVote(1);
+              }}
+              style={[
+                Theme.DEFAULT_BUTTON_STYLE,
+                {backgroundColor: Colors.approve},
+              ]}>
+              <Text style={{color: Colors.black}}>👍 Approve</Text>
+            </PressableOpacity>
+            <PressableOpacity
+              onPress={async () => {
+                await sendVote(0);
+              }}
+              style={[
+                Theme.DEFAULT_BUTTON_STYLE,
+                {backgroundColor: Colors.red},
+              ]}>
+              <Text style={styles.disapproveText}>👎 Disapprove</Text>
+            </PressableOpacity>
+          </View>
         </View>
       )}
     </ScrollView>
@@ -193,10 +277,19 @@ const styles = StyleSheet.create({
   scrollView: {
     flexGrow: 1,
   },
+  longText: {flex: 1, flexWrap: 'wrap', flexShrink: 1},
+  h1: {fontSize: 20},
   buttonContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
   },
   transparentWebView: {flex: 0, height: 0, opacity: 0},
+  centerText: {
+    textAlign: 'center',
+  },
+  disapproveText: {
+    color: Colors.white,
+    fontWeight: '600',
+  },
 });

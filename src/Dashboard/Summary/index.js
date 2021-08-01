@@ -8,7 +8,6 @@
  */
 
 'use strict';
-import AnalyticsScreen from './screens/Analytics';
 import SummaryScreen from './screens/Summary';
 
-export {AnalyticsScreen, SummaryScreen};
+export {SummaryScreen};
