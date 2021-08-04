@@ -19,6 +19,7 @@ import {SummaryScreen} from './src/Dashboard/Summary';
 import RepresentativeScreen from './src/Dashboard/Representative';
 import {Authenticate, userStillNeeds} from './src/api/components/auth';
 import PersonalDetailScreen from './src/Personal';
+import SettingsScreen from './src/Personal/Settings';
 
 for (const [_component_id, _component] of [
   ['LandingScreen', LandingScreen],
@@ -27,6 +28,7 @@ for (const [_component_id, _component] of [
   ['SELECT_DISTRICT_MODAL', SelectDistrict],
   ['RepresentativeScreen', RepresentativeScreen],
   ['PersonalDetailScreen', PersonalDetailScreen],
+  ['SettingsScreen', SettingsScreen],
 ]) {
   Navigation.registerComponent(_component_id, () => _component);
 }

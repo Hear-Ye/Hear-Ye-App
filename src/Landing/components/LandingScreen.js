@@ -32,26 +32,11 @@ import {
   Authenticate,
   setToken,
   userStillNeeds,
+  socialConfigs,
 } from '../../api/components/auth';
 
 const height = Dimensions.get('screen').height;
 const onboardedKey = 'onboarded-user-for-app';
-
-const velnotaUrl = Config.VELNOTA_ISSUER_URL,
-  configs = {
-    velnota: {
-      issuer: velnotaUrl,
-      clientId: Config.VELNOTA_CLIENT_ID,
-      redirectUrl: 'us.hearye.auth://velnota/login/callback/',
-      usePKCE: true,
-      scopes: ['openid'],
-      serviceConfiguration: {
-        authorizationEndpoint: `${velnotaUrl}/oauth/v1/authorize/`,
-        tokenEndpoint: `${velnotaUrl}/oauth/v1/token/`,
-        revocationEndpoint: `${velnotaUrl}/oauth/v1/revoke_token/`,
-      },
-    },
-  };
 
 // The Stop talking image came from
 // https://www.pexels.com/photo/woman-in-black-shirt-holding-yellow-and-black-no-smoking-sign-2372440/
@@ -64,13 +49,13 @@ const LandingScreen = () => {
     // noinspection JSIgnoredPromiseFromCall
     prefetchConfiguration({
       warmAndPrefetchChrome: true,
-      ...configs.velnota,
+      ...socialConfigs.velnota,
     });
   }, []);
 
   const handleAuthorize = React.useCallback(async () => {
     try {
-      const newAuthState = await authorize(configs.velnota);
+      const newAuthState = await authorize(socialConfigs.velnota);
       await setToken('velnota_access', newAuthState.accessToken);
       await setToken('velnota_refresh', newAuthState.refreshToken);
       // Finish registration process by showing a bunch of modals.

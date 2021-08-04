@@ -12,16 +12,19 @@ import {
   ActivityIndicator,
   Dimensions,
   FlatList,
+  Image,
   StyleSheet,
   Text,
   useColorScheme,
   View,
 } from 'react-native';
 import {ContributionGraph} from 'react-native-chart-kit';
+import {Navigation} from 'react-native-navigation';
 
 import {Colors, Theme} from '../utils';
 import {SummaryItem} from '../Dashboard/Summary/card';
 import ActivityIndicatorText from '../Dashboard/components/ActivityIndicatorText';
+import {PressableOpacity} from '../components/PressableOpacity';
 
 /**
  * @typedef {Object} GetContributionListObject
@@ -263,12 +266,42 @@ export default ({componentId}) => {
   //  season (91-92 days per). (Can also be a slider too maybe... just need a
   //  method of deselection.
 
+  async function settingsPress() {
+    await Navigation.push(componentId, {
+      component: {
+        name: 'SettingsScreen',
+        options: {
+          topBar: {
+            title: {
+              text: 'Settings',
+            },
+            backButton: {
+              title: 'Me',
+            },
+          },
+        },
+      },
+    });
+  }
+
   return (
     <View style={backgroundStyle}>
       <FlatList
         style={styles.background}
         ListHeaderComponent={
           <>
+            <PressableOpacity
+              hitSlop={10}
+              style={[styles.center, styles.settingsCenter]}
+              onPress={settingsPress}>
+              <Image
+                style={[
+                  styles.settingsSize,
+                  {tintColor: isDarkMode ? Colors.white : Colors.black},
+                ]}
+                source={require('./Settings/images/settings/settings.png')}
+              />
+            </PressableOpacity>
             {personalDetails === null ? (
               <ActivityIndicatorText text="Loading Profile..." />
             ) : (
@@ -342,6 +375,21 @@ export default ({componentId}) => {
 const styles = StyleSheet.create({
   h1: {
     fontSize: 20,
+  },
+  settingsSize: {
+    width: 25,
+    height: 25,
+  },
+  center: {
+    position: 'absolute',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  settingsCenter: {
+    top: 10,
+    right: 10,
+    zIndex: 3,
+    elevation: 3,
   },
   background: {
     margin: 8,

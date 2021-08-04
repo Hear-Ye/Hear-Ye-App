@@ -7,6 +7,8 @@
  * @format
  */
 
+import {StyleSheet} from 'react-native';
+
 const BASE = 16,
   BUTTON_WIDTH = BASE * 9,
   BUTTON_HEIGHT = BASE * 2.75;
@@ -19,6 +21,8 @@ export const DEFAULT_BUTTON_STYLE = {
   justifyContent: 'center',
   margin: 8,
 };
+
+export const CENTER_STYLE = {alignItems: 'center', justifyContent: 'center'};
 
 // noinspection JSSuspiciousNameCombination
 export const ROUND_BUTTON_STYLE = {
@@ -38,6 +42,14 @@ export const LARGE_ROUND_BUTTON_STYLE = {
   },
 };
 
+export const CENTER_BUTTON_CONTAINER = {
+  width: '100%',
+  height: '50%',
+  ...CENTER_STYLE,
+};
+
+export const TOP_RIGHT_ICON = {};
+
 const SIZES = {
   font: 'Teko-Regular',
 
@@ -47,11 +59,18 @@ const SIZES = {
   DEFAULT_BUTTON_STYLE: DEFAULT_BUTTON_STYLE,
   ROUND_BUTTON_STYLE: ROUND_BUTTON_STYLE,
   LARGE_ROUND_BUTTON_STYLE: LARGE_ROUND_BUTTON_STYLE,
+  CENTER_BUTTON_CONTAINER: CENTER_BUTTON_CONTAINER,
+  CENTER_STYLE: CENTER_STYLE,
   VERTICAL_PADDING: {
     marginVertical: 5,
   },
   LARGE_VERTICAL_PADDING: {
     marginVertical: 12,
+  },
+  separator: {
+    marginVertical: 8,
+    borderBottomColor: '#737373',
+    borderBottomWidth: StyleSheet.hairlineWidth,
   },
 };
 

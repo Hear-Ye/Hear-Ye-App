@@ -18,6 +18,7 @@
     "react-native-app-auth": "6.4.0",
     "react-native-chart-kit": "^6.11.0",
     "react-native-config": "1.4.3",
+    "react-native-dialog": "^8.2.0",
     "react-native-keychain": "7.0.0",
     "react-native-linear-gradient": "^2.5.6",
     "react-native-navigation": "^7.18.1",
