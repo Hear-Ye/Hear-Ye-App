@@ -87,7 +87,7 @@ const LandingScreen = () => {
         // We create modals that set configuration values until there's
         // nothing left to do... Except I just want to get this published
         // so instead I'm just going to show a modal lmao
-        if (!data.district?.district) {
+        if (data.includes(1)) {
           await Navigation.showModal({
             stack: {
               children: [

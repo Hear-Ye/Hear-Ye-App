@@ -17,7 +17,8 @@ import {loginNavigationRoot, dashboardNavigationRoot} from './src/utils';
 import Dashboard from './src/Dashboard';
 import {SummaryScreen} from './src/Dashboard/Summary';
 import RepresentativeScreen from './src/Dashboard/Representative';
-import {Authenticate} from './src/api/components/auth';
+import {Authenticate, userStillNeeds} from './src/api/components/auth';
+import PersonalDetailScreen from './src/Personal';
 
 for (const [_component_id, _component] of [
   ['LandingScreen', LandingScreen],
@@ -25,6 +26,7 @@ for (const [_component_id, _component] of [
   ['SummaryScreen', SummaryScreen],
   ['SELECT_DISTRICT_MODAL', SelectDistrict],
   ['RepresentativeScreen', RepresentativeScreen],
+  ['PersonalDetailScreen', PersonalDetailScreen],
 ]) {
   Navigation.registerComponent(_component_id, () => _component);
 }
@@ -34,7 +36,11 @@ Navigation.events().registerAppLaunchedListener(async () => {
   await Navigation.setRoot(
     data ? dashboardNavigationRoot : loginNavigationRoot,
   );
-  if (typeof data === 'object' && !data.district?.district) {
+  const stillNeeds = userStillNeeds(data);
+  if (typeof stillNeeds === 'boolean') {
+    return;
+  }
+  if (stillNeeds.includes(1)) {
     await Navigation.showModal({
       stack: {
         children: [

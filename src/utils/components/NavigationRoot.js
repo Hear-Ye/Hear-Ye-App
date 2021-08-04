@@ -70,6 +70,39 @@ const dashboardNavigationRoot = {
             },
           },
         },
+        {
+          stack: {
+            id: 'PersonalDetailStack',
+            children: [
+              {
+                component: {
+                  name: 'PersonalDetailScreen',
+                  options: {
+                    topBar: {
+                      visible: false,
+                      drawBehind: true,
+                      animate: false,
+                      height: 0,
+                    },
+                    backButton: {
+                      title: 'Me',
+                      displayMode: 'minimal',
+                    },
+                  },
+                },
+              },
+            ],
+            options: {
+              bottomTab: {
+                text: 'Me',
+                icon: require('../images/person/person.png'),
+                selectedIconColor: Colors.cupertinoBlue,
+                selectedTextColor: Colors.cupertinoBlue,
+                testID: 'PERSONAL_TAB_BAR_BUTTON',
+              },
+            },
+          },
+        },
       ],
     },
   },

@@ -9,7 +9,13 @@
 
 'use strict';
 import React from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 
 /**
  * Activity indicator with text to the right
@@ -19,11 +25,13 @@ import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
  * @returns {JSX.Element}
  */
 export default ({indicatorProps, textProps, text}) => {
+  const isDarkMode = useColorScheme() === 'dark';
+  const textColor = {color: isDarkMode ? 'white' : 'black'};
   return (
-    <View style={styles.alignTogether}>
+    <View style={[styles.alignTogether, textColor]}>
       <ActivityIndicator style={styles.marginHorizontal} {...indicatorProps} />
       <Text
-        style={[styles.marginHorizontal, styles.defaultFont]}
+        style={[styles.marginHorizontal, styles.defaultFont, textColor]}
         {...textProps}>
         {text}
       </Text>

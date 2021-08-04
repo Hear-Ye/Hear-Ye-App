@@ -50,6 +50,9 @@ const SIZES = {
   VERTICAL_PADDING: {
     marginVertical: 5,
   },
+  LARGE_VERTICAL_PADDING: {
+    marginVertical: 12,
+  },
 };
 
 export default SIZES;
