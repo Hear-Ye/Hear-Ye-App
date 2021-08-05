@@ -155,7 +155,7 @@ export const Logout = async () => {
   try {
     await revoke(socialConfigs.velnota, {
       tokenToRevoke: await getToken('velnota_refresh'),
-      includeBasicAuth: true,
+      includeBasicAuth: false,
       sendClientId: true,
     });
     await Storage.delete(ACCESS_TOKEN_KEY);
@@ -172,9 +172,13 @@ export const Logout = async () => {
 };
 
 export const DeleteLoggedInAccount = async () => {
+  const accessToken = await getToken('access');
   if (await Logout()) {
     try {
-      await request('users/delete-account/', 'POST');
+      await request('users/delete-account/', 'POST', {
+        headers: {Authorization: `Bearer ${accessToken}`},
+        authenticated: false,
+      });
     } catch (e) {
       Alert.alert('Uh oh, something wrong happened. Try again.');
       console.error(e);
