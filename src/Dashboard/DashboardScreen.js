@@ -8,8 +8,9 @@
  */
 
 'use strict';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet, Text, useColorScheme, View} from 'react-native';
+import RNBootSplash from 'react-native-bootsplash';
 
 import {Colors, useFetch} from '../utils';
 import {SummaryItem} from './Summary/card';
@@ -130,6 +131,10 @@ const DashboardScreen = props => {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.light,
   };
+
+  useEffect(() => {
+    RNBootSplash.hide();
+  }, []);
 
   const [data, fetchMore] = useFetch('content/topic/', getTopics);
   const renderItem = ({item}) => {
