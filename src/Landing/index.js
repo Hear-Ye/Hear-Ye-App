@@ -9,5 +9,7 @@
 
 'use strict';
 import LandingScreen from './components/LandingScreen';
+import OnboardingModal from './components/onboarding';
+import SelectDistrict from './SelectDistrict';
 
-export {LandingScreen};
+export {LandingScreen, OnboardingModal, SelectDistrict};

@@ -11,8 +11,7 @@
 import {Navigation} from 'react-native-navigation';
 
 import './src/globals.js';
-import {LandingScreen} from './src/Landing';
-import SelectDistrict from './src/Landing/SelectDistrict';
+import {LandingScreen, OnboardingModal, SelectDistrict} from './src/Landing';
 import {loginNavigationRoot, dashboardNavigationRoot} from './src/utils';
 import Dashboard from './src/Dashboard';
 import {SummaryScreen} from './src/Dashboard/Summary';
@@ -26,6 +25,7 @@ for (const [_component_id, _component] of [
   ['Dashboard', Dashboard],
   ['SummaryScreen', SummaryScreen],
   ['SELECT_DISTRICT_MODAL', SelectDistrict],
+  ['ONBOARDING_MODAL', OnboardingModal],
   ['RepresentativeScreen', RepresentativeScreen],
   ['PersonalDetailScreen', PersonalDetailScreen],
   ['SettingsScreen', SettingsScreen],

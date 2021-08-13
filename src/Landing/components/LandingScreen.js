@@ -8,13 +8,12 @@
  */
 
 'use strict';
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import {
   ImageBackground,
   StyleSheet,
   Text,
   View,
-  Modal,
   Linking,
   Dimensions,
   useColorScheme,
@@ -27,7 +26,6 @@ import LinearGradient from 'react-native-linear-gradient';
 
 import {Colors, dashboardNavigationRoot, Theme, Storage} from '../../utils';
 import {PressableOpacity} from '../../components/PressableOpacity';
-import Onboarding from './onboarding';
 import {
   Authenticate,
   setToken,
@@ -42,10 +40,37 @@ const onboardedKey = 'onboarded-user-for-app';
 // https://www.pexels.com/photo/woman-in-black-shirt-holding-yellow-and-black-no-smoking-sign-2372440/
 const LandingScreen = () => {
   const isDarkMode = useColorScheme() === 'dark';
-  const [modalVisible, setModalVisible] = React.useState(false);
 
-  React.useEffect(() => {
-    setModalVisible(!Storage.getBoolean(onboardedKey));
+  async function openHelpModal() {
+    await Navigation.showModal({
+      stack: {
+        children: [
+          {
+            component: {
+              name: 'ONBOARDING_MODAL',
+              options: {
+                topBar: {
+                  visible: false,
+                  drawBehind: true,
+                  animate: false,
+                  height: 0,
+                },
+              },
+            },
+          },
+        ],
+      },
+    });
+  }
+
+  useEffect(() => {
+    async function openOnboarding() {
+      if (!(await Storage.getBoolean(onboardedKey))) {
+        await openHelpModal();
+      }
+    }
+
+    openOnboarding();
     // noinspection JSIgnoredPromiseFromCall
     prefetchConfiguration({
       warmAndPrefetchChrome: true,
@@ -53,7 +78,7 @@ const LandingScreen = () => {
     });
   }, []);
 
-  const handleAuthorize = React.useCallback(async () => {
+  const handleAuthorize = useCallback(async () => {
     try {
       const newAuthState = await authorize(socialConfigs.velnota);
       await setToken('velnota_access', newAuthState.accessToken);
@@ -106,19 +131,6 @@ const LandingScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Modal
-        animationType="slide"
-        presentationStyle="pageSheet"
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(false);
-        }}>
-        <Onboarding
-          onDone={() => {
-            setModalVisible(false);
-          }}
-        />
-      </Modal>
       <ImageBackground
         accessibilityRole="image"
         source={require('./stop-talking.jpg')}
@@ -187,7 +199,7 @@ const LandingScreen = () => {
             <View>
               <PressableOpacity
                 onPress={async () => {
-                  setModalVisible(vis => !vis);
+                  await openHelpModal();
                   await Storage.set(onboardedKey, true);
                 }}
                 style={[

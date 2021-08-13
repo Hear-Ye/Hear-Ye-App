@@ -69,19 +69,10 @@ export const setToken = async (token_type, token_value) => {
  */
 const RefreshToken = async () => {
   try {
-    const response = await fetch(`${url}users/v1/token/refresh/`, {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        refresh: await getToken('refresh'),
-      }),
+    const response = await request('users/v1/token/refresh/', 'POST', {
+      body: {refresh: await getToken('refresh')},
+      authenticated: false,
     });
-    if (!response.ok) {
-      return false;
-    }
     await setToken('refresh', (await response.json()).refresh);
     return true;
   } catch (e) {

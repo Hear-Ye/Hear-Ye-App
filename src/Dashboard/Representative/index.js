@@ -397,7 +397,7 @@ export default ({repID, componentId, rep_info}) => {
                 </View>
               </>
             )}
-            <Text style={[Theme.VERTICAL_PADDING, styles.textStyle]}>
+            <Text style={[textColor, Theme.VERTICAL_PADDING, styles.textStyle]}>
               Here's a list of how your representative is voting
             </Text>
           </>

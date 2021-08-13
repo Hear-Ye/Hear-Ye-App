@@ -4,9 +4,9 @@
     <item android:drawable="@color/theme"/>
 
     <item
-        android:width="200dp"
-        android:height="200dp"
-        android:drawable="@mipmap/ic_launcher"
+        android:width="256dp"
+        android:height="256dp"
+        android:drawable="@drawable/HearYeLogo"
         android:gravity="center" />
 
 </layer-list>
