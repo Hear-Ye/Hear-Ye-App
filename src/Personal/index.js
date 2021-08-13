@@ -167,9 +167,9 @@ export default ({componentId}) => {
     color: isDarkMode ? Colors.white : Colors.black,
   };
   const chartConfig = {
-    backgroundColor: 'rgb(207, 159, 255)',
-    backgroundGradientFrom: 'rgb(207, 159, 255)',
-    backgroundGradientTo: 'rgb(169,86,250)',
+    backgroundColor: Colors.lightPurple,
+    backgroundGradientFrom: Colors.lightPurple,
+    backgroundGradientTo: Colors.ourPurple,
     color: (opacity = 0) => `rgba(255, 255, 255, ${opacity})`,
     style: {
       borderRadius: 16,

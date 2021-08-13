@@ -20,4 +20,7 @@ export default {
   black: '#000',
   cupertinoBlue: '#006ee6',
   approve: '#90ee90',
+  // Purple
+  lightPurple: 'rgb(207, 159, 255)',
+  ourPurple: 'rgb(169, 86, 250)',
 };

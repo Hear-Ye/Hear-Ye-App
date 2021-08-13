@@ -24,7 +24,6 @@ import {authorize, prefetchConfiguration} from 'react-native-app-auth';
 import {Navigation} from 'react-native-navigation';
 import Config from 'react-native-config';
 import LinearGradient from 'react-native-linear-gradient';
-import RNBootSplash from 'react-native-bootsplash';
 
 import {Colors, dashboardNavigationRoot, Theme, Storage} from '../../utils';
 import {PressableOpacity} from '../../components/PressableOpacity';
@@ -52,7 +51,6 @@ const LandingScreen = () => {
       warmAndPrefetchChrome: true,
       ...socialConfigs.velnota,
     });
-    RNBootSplash.hide();
   }, []);
 
   const handleAuthorize = React.useCallback(async () => {

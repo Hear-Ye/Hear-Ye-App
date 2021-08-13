@@ -116,6 +116,7 @@ for (const x of document.body.querySelectorAll("details")) {
  * value is number of votes.
  * @property {Object.<string, number>} total_votes like total_district_votes, keys
  * follow same pattern but it's total_X.
+ * @property {boolean} did_congressmen_vote whether a Congressman voted here
  */
 
 /**

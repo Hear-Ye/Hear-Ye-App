@@ -27,19 +27,43 @@ const styles = StyleSheet.create({
   invert: {
     transform: [{scaleX: -0.5}, {scaleY: -0.5}],
   },
+  summaryBorder: {
+    borderColor: Colors.ourPurple,
+    borderWidth: 1,
+  },
 });
+
+/**
+ * Calculates percent for total votes
+ * @param data {Object.<string, number>}
+ */
+function getPercentVote(data) {
+  let sum = Object.values(data).reduce((a, b) => a + b, 0);
+  if (sum < 1) {
+    sum = 1;
+  }
+  const keys = Object.keys(data);
+  keys.sort();
+  return parseFloat((data[keys[0]] / sum) * 100).toFixed(2) + '%';
+}
 
 /**
  * Creates a Card for Summary topic types
  * @param topic {Object}
  * @param topic.title {String} Summary title
  * @param topic.created {String} ISO-8601 string with ending Z to parse as UTC
+ * @param topic.did_congressmen_vote {boolean} whether a Congressman voted here
+ * @param topic.total_district_votes {TopicInfo.total_district_votes}
+ * @param topic.total_votes {TopicInfo.total_votes}
  * @param user_vote {number} user vote (passed as state from previous component)
  * @return {JSX.Element}
  */
 const SummaryCard = ({topic, user_vote}) => {
   const isDarkMode = useColorScheme() === 'dark';
-  const cardStyle = {backgroundColor: isDarkMode ? Colors.black : Colors.white};
+  let cardStyle = {backgroundColor: isDarkMode ? Colors.black : Colors.white};
+  if (topic.did_congressmen_vote) {
+    cardStyle = {...cardStyle, ...styles.summaryBorder};
+  }
   const additionalTitleStyle = {
     color: isDarkMode ? Colors.white : Colors.black,
   };
@@ -81,6 +105,20 @@ const SummaryCard = ({topic, user_vote}) => {
       <Text style={subTitleStyle}>
         {new Date(topic.created).toLocaleString()}
       </Text>
+      {user_vote !== null && typeof topic.total_votes === 'object' && (
+        <>
+          <Text style={subTitleStyle}>
+            {`Total National Votes in Favor: ${getPercentVote(
+              topic.total_votes,
+            )}`}
+          </Text>
+          <Text style={subTitleStyle}>
+            {`Total District Votes in Favor: ${getPercentVote(
+              topic.total_district_votes,
+            )}`}
+          </Text>
+        </>
+      )}
     </Card>
   );
 };

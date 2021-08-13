@@ -82,6 +82,7 @@ export default ({repID, componentId, rep_info}) => {
   const isDarkMode = useColorScheme() === 'dark';
   const textColor = {color: isDarkMode ? Colors.white : Colors.black};
   const backgroundStyle = {
+    height: '100%',
     backgroundColor: isDarkMode ? Colors.darker : Colors.light,
   };
   /**
