@@ -10,7 +10,7 @@
     "lint": "npx prettier --write __tests__ index.js src metro.config.js .prettierrc.js babel.config.js"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.15.6",
+    "@react-native-async-storage/async-storage": "^1.15.7",
     "@react-native-mapbox-gl/maps": "^8.3.0",
     "prop-types": "^15.7.2",
     "react": "17.0.1",
