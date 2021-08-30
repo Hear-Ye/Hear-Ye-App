@@ -111,9 +111,9 @@ export const request = async (path, method, options = {}) => {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   };
-  if (
-    typeof options.authenticated !== 'boolean' ? true : options.authenticated
-  ) {
+  const authenticated =
+    typeof options.authenticated !== 'boolean' ? true : options.authenticated;
+  if (authenticated) {
     headers.Authorization = `Bearer ${await getToken('access')}`;
   }
   headers = {...headers, ...(options.headers ? options.headers : {})};
@@ -135,7 +135,7 @@ export const request = async (path, method, options = {}) => {
   if (response.ok) {
     return response;
   }
-  if (response.status === 401) {
+  if (response.status === 401 && authenticated) {
     if (await Authenticate()) {
       return await request(path, method, options);
     } else {

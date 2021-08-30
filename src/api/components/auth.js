@@ -14,7 +14,6 @@ import {Navigation} from 'react-native-navigation';
 import Config from 'react-native-config';
 import {revoke} from 'react-native-app-auth';
 
-import url from './url';
 import {loginNavigationRoot, Storage} from '../../utils';
 
 const ACCESS_TOKEN_KEY = 'access-token',
@@ -90,20 +89,13 @@ export const Authenticate = async (force_obtain_both = false) => {
   const _refreshed = await RefreshToken();
   if (!_refreshed || force_obtain_both) {
     try {
-      const response = await fetch(`${url}users/v1/token/obtain/`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+      const response = await request('users/v1/token/obtain/', 'POST', {
+        authenticated: false,
+        body: {
           access_token: await getToken('velnota_access'),
           refresh_token: await getToken('velnota_refresh'),
-        }),
+        },
       });
-      if (!response.ok) {
-        return false;
-      }
       const data = await response.json();
       await setToken('access', data.access_token);
       await setToken('refresh', data.refresh_token);

@@ -1,45 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_5" orientation="portrait" appearance="light"/>
+    <device id="retina6_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
-    <customFonts key="customFonts">
-        <array key="Teko-Regular.ttf">
-            <string>Teko-Regular</string>
-        </array>
-    </customFonts>
     <scenes>
         <!--View Controller-->
         <scene sceneID="EHf-IW-A2E">
             <objects>
                 <viewController id="01J-lp-oVM" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <rect key="frame" x="0.0" y="0.0" width="428" height="926"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hear Ye" textAlignment="center" lineBreakMode="middleTruncation" baselineAdjustment="alignBaselines" minimumFontSize="18" translatesAutoresizingMaskIntoConstraints="NO" id="GJd-Yh-RWb">
-                                <rect key="frame" x="134.33333333333337" y="441.33333333333331" width="145.66666666666663" height="93.333333333333314"/>
-                                <fontDescription key="fontDescription" name="Teko-Regular" family="Teko" pointSize="65"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Logo" translatesAutoresizingMaskIntoConstraints="NO" id="52r-1C-YKB">
-                                <rect key="frame" x="15" y="79.999999999999972" width="399" height="361.33333333333326"/>
+                                <rect key="frame" x="5" y="80" width="423" height="383"/>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AppNameImg" translatesAutoresizingMaskIntoConstraints="NO" id="Scd-mK-buO">
+                                <rect key="frame" x="50" y="463" width="328" height="293"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Bcu-3y-fUS"/>
                         <color key="backgroundColor" red="0.8116157651" green="0.62282687430000006" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="GJd-Yh-RWb" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="8HO-CF-Jbl"/>
-                            <constraint firstItem="GJd-Yh-RWb" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="40" id="HJu-mt-m32"/>
+                            <constraint firstItem="Scd-mK-buO" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="50" id="01u-7X-E8X"/>
+                            <constraint firstItem="Scd-mK-buO" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" constant="-50" id="HtS-Rb-dGA"/>
+                            <constraint firstItem="Scd-mK-buO" firstAttribute="top" secondItem="52r-1C-YKB" secondAttribute="bottom" id="Jos-v5-jGU"/>
                             <constraint firstItem="52r-1C-YKB" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailing" id="Rud-1p-E8s"/>
-                            <constraint firstItem="52r-1C-YKB" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="15" id="iQa-Bg-abJ"/>
-                            <constraint firstItem="52r-1C-YKB" firstAttribute="bottom" secondItem="GJd-Yh-RWb" secondAttribute="top" id="kb9-Wt-9Uo"/>
+                            <constraint firstItem="52r-1C-YKB" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="aFs-1I-4l3"/>
+                            <constraint firstItem="52r-1C-YKB" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leading" constant="5" id="iQa-Bg-abJ"/>
                             <constraint firstItem="52r-1C-YKB" firstAttribute="top" secondItem="Ze5-6b-2t3" secondAttribute="top" constant="80" id="w4n-d3-CqJ"/>
+                            <constraint firstItem="Scd-mK-buO" firstAttribute="bottom" secondItem="Ze5-6b-2t3" secondAttribute="bottom" constant="-170" id="zoN-c1-yeJ"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -49,6 +43,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="AppNameImg" width="366" height="231"/>
         <image name="Logo" width="512" height="512"/>
     </resources>
 </document>
