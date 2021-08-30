@@ -63,8 +63,8 @@ const dashboardNavigationRoot = {
               bottomTab: {
                 text: 'Home',
                 icon: require('../images/home/home.png'),
-                iconColor: Colors.dark,
-                textColor: Colors.dark,
+                iconColor: {dark: Colors.white, light: Colors.dark},
+                textColor: {dark: Colors.white, light: Colors.dark},
                 selectedIconColor: Colors.cupertinoBlue,
                 selectedTextColor: Colors.cupertinoBlue,
                 testID: 'HOME_TAB_BAR_BUTTON',
@@ -98,8 +98,8 @@ const dashboardNavigationRoot = {
               bottomTab: {
                 text: 'Me',
                 icon: require('../images/person/person.png'),
-                iconColor: Colors.dark,
-                textColor: Colors.dark,
+                iconColor: {dark: Colors.white, light: Colors.dark},
+                textColor: {dark: Colors.white, light: Colors.dark},
                 selectedIconColor: Colors.cupertinoBlue,
                 selectedTextColor: Colors.cupertinoBlue,
                 testID: 'PERSONAL_TAB_BAR_BUTTON',
