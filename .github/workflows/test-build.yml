@@ -20,5 +20,14 @@ jobs:
       with:
         node-version: '16.8.0'
         cache: 'npm'
-    - run: npm ci
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.2
+        bundler-cache: true
+    - name: Install Node Dependencies
+      run: npm ci
+    - name: Install iOS Pods
+      run: |
+        pod install --project-directory=ios
     - run: npm run ios
